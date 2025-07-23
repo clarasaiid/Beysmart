@@ -1,3 +1,4 @@
+
 export const buttonStyles = {
     primaryLarge : {
       backgroundColor: '#CFFF5E',
@@ -38,10 +39,10 @@ export const buttonStyles = {
       primaryDisabled: {
         backgroundColor: '#E8FFA1',
         textColor: '#C0C0C0',
-        paddingVertical: 16,
-        paddingHorizontal: 32,
+        paddingVertical: 12,
+        paddingHorizontal: 28,
         borderRadius: 12,
-        fontSize: 16,
+        fontSize: 14,
         disabledBackgroundColor: '#E8FFA1',
       },
       secondaryLarge: {
@@ -83,12 +84,113 @@ export const buttonStyles = {
       secondaryDisabled: {
         backgroundColor: '#F3F4F5',
         textColor: '#C0C0C0',
-        paddingVertical: 16,
-        paddingHorizontal: 32,
+        paddingVertical: 12,
+        paddingHorizontal: 28,
         borderRadius: 12,
-        fontSize: 16,
+        fontSize: 14,
         disabledBackgroundColor: '#F3F4F5',
       },
+      iconOnlyLarge: {
+        backgroundColor: 'transparent',
+        textColor: '#000000',
+        borderRadius: 12,
+        fontSize: 20,
+        width: 60,
+        height: 60,
+        borderWidth: 2,
+        borderColor: '#E5E7EB',
+      },
+      
+      iconOnlyMedium: {
+        backgroundColor: 'transparent',
+        textColor: '#000000',
+        borderRadius: 12,
+        fontSize: 18,
+        width: 48,
+        height: 48,
+        borderWidth: 2,
+        borderColor: '#E5E7EB',
+      },
+      
+      iconOnlySmall: {
+        backgroundColor: 'transparent',
+        textColor: '#000000',
+        borderRadius: 12,
+        fontSize: 16,
+        width: 36,
+        height: 36,
+        borderWidth: 2,
+        borderColor: '#E5E7EB',
+      },
+      
+      iconOnlyPressed: {
+        backgroundColor: '#C488F0',
+        textColor: '#000000',
+        borderRadius: 12,
+        fontSize: 18,
+        width: 48,
+        height: 48,
+        borderWidth: 2,
+        borderColor: '#E5E7EB',
+      },
+      
+      iconOnlyDisabled: {
+        backgroundColor: 'transparent',
+        textColor: '#C0C0C0',
+        borderRadius: 12,
+        fontSize: 18,
+        width: 48,
+        height: 48,
+        borderWidth: 2,
+        borderColor: '#E5E7EB',
+      },
+      
+      textOnlyLarge: {
+        backgroundColor: 'transparent',
+        textColor: '#000000',
+        borderRadius: 0,
+        paddingVertical: 16,
+        paddingHorizontal: 16,
+        fontSize: 16,
+        disabledBackgroundColor: 'transparent',
+      },
+      textOnlyMedium: {
+        backgroundColor: 'transparent',
+        textColor: '#000000',
+        borderRadius: 0,
+        paddingVertical: 12,
+        paddingHorizontal: 12,
+        fontSize: 14,
+        disabledBackgroundColor: 'transparent',
+      },
+      textOnlySmall: {
+        backgroundColor: 'transparent',
+        textColor: '#000000',
+        borderRadius: 0,
+        paddingVertical: 8,
+        paddingHorizontal: 8,
+        fontSize: 12,
+        disabledBackgroundColor: 'transparent',
+      },
+      textOnlyPressed: {
+        backgroundColor: 'transparent',
+        textColor: '#C488F0',
+        borderRadius: 0,
+        paddingVertical: 12,
+        paddingHorizontal: 12,
+        fontSize: 14,
+        disabledBackgroundColor: 'transparent',
+      },
+      textOnlyDisabled: {
+        backgroundColor: 'transparent',
+        textColor: '#C0C0C0',
+        borderRadius: 0,
+        paddingVertical: 16,
+        paddingHorizontal: 16,
+        fontSize: 16,
+        disabledBackgroundColor: 'transparent',
+      },
+      
     
   };
   

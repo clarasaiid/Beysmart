@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { DeviceCard } from '../../design-system/cards/devicecard/devicecard'
 import * as Icons from '../../design-system/icons'
 
+
 const IconGalleryScreen = () => {
   const [isOn, setIsOn] = useState(true);
 

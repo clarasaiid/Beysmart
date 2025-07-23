@@ -1,24 +1,27 @@
-// design-system/components/buttons.tsx
-import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { buttonStyles } from './buttonstyle';
 
-type ButtonVariant =
-  | 'primaryLarge'
-  | 'primaryMedium'
-  | 'primarySmall'
-  | 'primaryPressed'
-  | 'primaryDisabled'
-  | 'secondaryLarge'
-  | 'secondaryMedium'
-  | 'secondarySmall'
-  | 'secondaryPressed'
-  | 'secondaryDisabled';
+type ButtonVariant = keyof typeof buttonStyles;
+
+type ButtonStyle = {
+  backgroundColor: string;
+  textColor: string;
+  borderRadius: number;
+  fontSize: number;
+  paddingVertical?: number;
+  paddingHorizontal?: number;
+  disabledBackgroundColor?: string;
+  width?: number;
+  height?: number;
+  borderWidth?: number;
+  borderColor?: string;
+};
+
 interface ButtonProps {
   variant: ButtonVariant;
   title?: string;
-  icon?: React.ReactNode; // Can be passed later when icons are ready
-  onPress?: () => void;
+  icon?: React.ReactNode;
+  onPress: () => void;
   disabled?: boolean;
 }
 
@@ -29,7 +32,9 @@ export const AppButton: React.FC<ButtonProps> = ({
   onPress,
   disabled = false,
 }) => {
-  const variantStyle = buttonStyles[variant];
+  const variantStyle = buttonStyles[variant] as ButtonStyle;
+  const isIconOnly = variant.startsWith('iconOnly');
+  const isTextOnly = variant.startsWith('textOnly');
 
   return (
     <TouchableOpacity
@@ -37,18 +42,46 @@ export const AppButton: React.FC<ButtonProps> = ({
       disabled={disabled}
       style={{
         backgroundColor: disabled
-          ? variantStyle.disabledBackgroundColor
+          ? variantStyle.disabledBackgroundColor ?? variantStyle.backgroundColor
           : variantStyle.backgroundColor,
-        paddingVertical: variantStyle.paddingVertical,
-        paddingHorizontal: variantStyle.paddingHorizontal,
         borderRadius: variantStyle.borderRadius,
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
+        overflow: 'hidden', // <- prevents stretching
+      
+        ...(isIconOnly
+          ? {
+              width: variantStyle.width,
+              height: variantStyle.height,
+              borderWidth: variantStyle.borderWidth ?? 0,
+              borderColor: variantStyle.borderColor ?? 'transparent',
+              flexDirection: 'column',
+            }
+          : {
+              paddingVertical: variantStyle.paddingVertical ?? 12,
+              paddingHorizontal: variantStyle.paddingHorizontal ?? 16,
+              flexDirection: 'row',
+            }),
       }}
     >
-      {icon && <View style={{ marginRight: title ? 8 : 0 }}>{icon}</View>}
-      {title && (
+      {/* Icon */}
+      {icon && (
+        <View
+        style={{
+          marginRight: title && !isIconOnly ? 8 : 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: isIconOnly ? '100%' : undefined,
+          height: isIconOnly ? '100%' : undefined,
+        }}
+      >
+        {icon}
+      </View>
+      
+      )}
+
+      {/* Title */}
+      {!isIconOnly && title && (
         <Text
           style={{
             color: variantStyle.textColor,
