@@ -1,10 +1,26 @@
-import React from 'react'
+import { useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import * as Icons from '../design-system/icons'
+import { DeviceCard } from '../../design-system/cards/devicecard/devicecard'
+import * as Icons from '../../design-system/icons'
+
 
 const IconGalleryScreen = () => {
+  const [isOn, setIsOn] = useState(true);
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <View style={{ width: '100%', marginBottom: 32 }}>
+        <DeviceCard
+          title="Living Room Lights"
+          status={isOn ? 'Currently on' : 'Currently off'}
+          statusColor={isOn ? '#CFFF5E' : '#6E6E6E'}
+          power={isOn ? '18W' : '0W'}
+          iconName="LightIcon"
+          iconColor="#CFFF5E"
+          switchValue={isOn}
+          onSwitchChange={setIsOn}
+        />
+      </View>
       {Object.entries(Icons).map(([name, IconComponent]) => (
         <View key={name} style={styles.iconBox}>
           <IconComponent width={24} height={24} />
