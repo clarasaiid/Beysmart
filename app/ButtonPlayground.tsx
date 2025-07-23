@@ -2,74 +2,41 @@
 import React from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { AppButton } from '../design-system/Buttons/Buttons';
-import { Ionicons } from '@expo/vector-icons'; // if using Expo
+import TimeIcon from '../design-system/icons/filled/TimeIcon';
 
 export default function ButtonPlayground() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>Button Playground</Text>
+      {/* PRIMARY BUTTONS */}
+      <Text style={styles.sectionTitle}>Primary Buttons</Text>
+      <AppButton variant="primaryLarge" title="Start" onPress={() => {}} />
+      <AppButton variant="primaryMedium" title="Start" onPress={() => {}} />
+      <AppButton variant="primarySmall" title="Start" onPress={() => {}} />
+      <AppButton variant="primaryPressed" title="Start" onPress={() => {}} />
+      <AppButton variant="primaryDisabled" title="Start" disabled onPress={() => {}} />
 
-      {/* Primary Buttons */}
-      <AppButton
-        variant="primaryLarge"
-        title="start"
-        onPress={() => console.log('Primary Large')}
-      />
+      {/* SECONDARY BUTTONS */}
+      <Text style={styles.sectionTitle}>Secondary Buttons</Text>
+      <AppButton variant="secondaryLarge" title="Start" onPress={() => {}} />
+      <AppButton variant="secondaryMedium" title="Start" onPress={() => {}} />
+      <AppButton variant="secondarySmall" title="Start" onPress={() => {}} />
+      <AppButton variant="secondaryPressed" title="Start" onPress={() => {}} />
+      <AppButton variant="secondaryDisabled" title="Start" disabled onPress={() => {}} />
 
-      <AppButton
-        variant="primaryMedium"
-        title="save"
-        onPress={() => console.log('Primary Medium')}
-      />
-
-      <AppButton
-        variant="primarySmall"
-        title="Primary Small"
-        onPress={() => console.log('Primary Small')}
-      />
-
-      <AppButton
-        variant="primaryPressed"
-        title="Primary Pressed"
-        onPress={() => console.log('Primary Pressed')}
-      />
-
-      <AppButton
-        variant="primaryDisabled"
-        title="Primary Disabled"
-        disabled={true}
-      />
-
-      {/* Secondary Buttons */}
-      <AppButton
-        variant="secondaryLarge"
-        title="Secondary Large"
-        onPress={() => console.log('Secondary Large')}
-      />
-
-      <AppButton
-        variant="secondaryMedium"
-        title="Secondary Medium"
-        onPress={() => console.log('Secondary Medium')}
-      />
-
-      <AppButton
-        variant="secondarySmall"
-        title="Secondary Small"
-        onPress={() => console.log('Secondary Small')}
-      />
-
-      <AppButton
-        variant="secondaryPressed"
-        title="Secondary Pressed"
-        onPress={() => console.log('Secondary Pressed')}
-      />
-
-      <AppButton
-        variant="secondaryDisabled"
-        title="Secondary Disabled"
-        disabled={true}
-      />
+      {/* TEXT ONLY */}
+      <Text style={styles.sectionTitle}>Text Only</Text>
+      <AppButton variant="textOnlyLarge" title="Start" onPress={() => {}} />
+<AppButton variant="textOnlyMedium" title="Start" onPress={() => {}} />
+<AppButton variant="textOnlySmall" title="Start" onPress={() => {}} />
+<AppButton variant="textOnlyPressed" title="Start" onPress={() => {}} />
+<AppButton variant="textOnlyDisabled" title="Start" disabled onPress={() => {}} />
+      {/* ICON ONLY */}
+      <Text style={styles.sectionTitle}>Icon Only</Text>
+      <AppButton variant="iconOnlyLarge" icon={<TimeIcon size={20} />} onPress={() => {}} />
+<AppButton variant="iconOnlyMedium" icon={<TimeIcon size={20} />} onPress={() => {}} />
+<AppButton variant="iconOnlySmall" icon={<TimeIcon size={20} />} onPress={() => {}} />
+<AppButton variant="iconOnlyPressed" icon={<TimeIcon size={20} color="#9F4BF2" />} onPress={() => {}} />
+<AppButton variant="iconOnlyDisabled" title="Start" disabled onPress={() => {}} />
     </ScrollView>
   );
 }
@@ -80,9 +47,9 @@ const styles = StyleSheet.create({
     gap: 16,
     backgroundColor: '#fff',
   },
-  heading: {
-    fontSize: 20,
+  sectionTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 12,
+    marginVertical: 8,
   },
 });

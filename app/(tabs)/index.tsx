@@ -1,38 +1,12 @@
-import React from 'react'
-import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import * as Icons from '../../design-system/icons' 
+// App.tsx
+import React from 'react';
+import { SafeAreaView } from 'react-native';
+import ButtonPlayground from '../ButtonPlayground';
 
-const IconGalleryScreen = () => {
+export default function App() {
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {Object.entries(Icons).map(([name, IconComponent]) => (
-        <View key={name} style={styles.iconBox}>
-          <IconComponent width={24} height={24} />
-          <Text style={styles.label}>{name}</Text>
-        </View>
-      ))}
-    </ScrollView>
-  )
+    <SafeAreaView style={{ flex: 1 }}>
+      <ButtonPlayground />
+    </SafeAreaView>
+  );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    padding: 16,
-    gap: 16,
-    justifyContent: 'flex-start'
-  },
-  iconBox: {
-    width: 72,
-    alignItems: 'center',
-    marginBottom: 24
-  },
-  label: {
-    fontSize: 10,
-    marginTop: 8,
-    textAlign: 'center'
-  }
-})
-
-export default IconGalleryScreen
