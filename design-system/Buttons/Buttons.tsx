@@ -1,4 +1,5 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import React from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import { buttonStyles } from './buttonstyle';
 
 type ButtonVariant = keyof typeof buttonStyles;
@@ -25,6 +26,8 @@ interface ButtonProps {
   disabled?: boolean;
 }
 
+
+
 export const AppButton: React.FC<ButtonProps> = ({
   variant,
   title,
@@ -36,6 +39,16 @@ export const AppButton: React.FC<ButtonProps> = ({
   const isIconOnly = variant.startsWith('iconOnly');
   const isTextOnly = variant.startsWith('textOnly');
 
+  // 🟢 Place this here — before return
+  const iconSizeMap: Record<string, number> = {
+    iconOnlyLarge: 28,
+    iconOnlyMedium: 22,
+    iconOnlySmall: 16,
+    iconOnlyPressed: 22,
+    iconOnlyDisabled: 22,
+  };
+  
+  
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -47,8 +60,8 @@ export const AppButton: React.FC<ButtonProps> = ({
         borderRadius: variantStyle.borderRadius,
         alignItems: 'center',
         justifyContent: 'center',
-        overflow: 'hidden', // <- prevents stretching
-      
+        overflow: 'hidden',
+
         ...(isIconOnly
           ? {
               width: variantStyle.width,
@@ -67,17 +80,24 @@ export const AppButton: React.FC<ButtonProps> = ({
       {/* Icon */}
       {icon && (
         <View
-        style={{
-          marginRight: title && !isIconOnly ? 8 : 0,
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: isIconOnly ? '100%' : undefined,
-          height: isIconOnly ? '100%' : undefined,
-        }}
-      >
-        {icon}
-      </View>
-      
+          style={{
+            marginRight: title && !isIconOnly ? 8 : 0,
+            ...(isIconOnly && {
+              width: '100%',
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }),
+          }}
+        >
+          {isIconOnly && React.isValidElement(icon)
+            ? React.cloneElement(icon as React.ReactElement<any>, {
+                width: iconSizeMap[variant] || 20,
+                height: iconSizeMap[variant] || 20,
+                color: (variantStyle as any).iconColor || variantStyle.textColor,
+              })
+            : icon}
+        </View>
       )}
 
       {/* Title */}
