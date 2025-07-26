@@ -127,17 +127,21 @@ export const buttonStyles = {
         backgroundColor: '#C488F0',
         textColor: '#000000',
         borderRadius: 12,
+        iconColor: '#000000',
         fontSize: 18,
         width: 48,
         height: 48,
         borderWidth: 2,
         borderColor: '#E5E7EB',
       },
+     
+      
       
       iconOnlyDisabled: {
         backgroundColor: 'transparent',
-        textColor: '#C0C0C0',
+        textColor: '#9CA3AF',
         borderRadius: 12,
+        iconColor: '#9CA3AF',
         fontSize: 18,
         width: 48,
         height: 48,

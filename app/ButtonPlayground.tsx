@@ -1,8 +1,9 @@
 // screens/ButtonPlayground.tsx
-import React from 'react';
-import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, Text } from 'react-native';
 import { AppButton } from '../design-system/Buttons/Buttons';
 import TimeIcon from '../design-system/icons/filled/TimeIcon';
+
+
 
 export default function ButtonPlayground() {
   return (
@@ -35,8 +36,11 @@ export default function ButtonPlayground() {
       <AppButton variant="iconOnlyLarge" icon={<TimeIcon size={20} />} onPress={() => {}} />
 <AppButton variant="iconOnlyMedium" icon={<TimeIcon size={20} />} onPress={() => {}} />
 <AppButton variant="iconOnlySmall" icon={<TimeIcon size={20} />} onPress={() => {}} />
-<AppButton variant="iconOnlyPressed" icon={<TimeIcon size={20} color="#9F4BF2" />} onPress={() => {}} />
-<AppButton variant="iconOnlyDisabled" title="Start" disabled onPress={() => {}} />
+<AppButton variant="iconOnlyPressed" icon={<TimeIcon />} onPress={() => {}} />
+
+<AppButton variant="iconOnlyDisabled"  icon={<TimeIcon />} title="Start" disabled onPress={() => {}} />
+
+
     </ScrollView>
   );
 }
