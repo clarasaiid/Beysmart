@@ -1,7 +1,6 @@
-import * as React from "react";
 import Svg, { ClipPath, Defs, G, Path } from "react-native-svg";
 
-const FilledStarIcon = ({ width = 24, height = 24,color = "#1F2937", ...props }) => (
+const FilledStarIcon = ({ width = 24, height = 24, color = "#1F2937", ...props }) => (
   <Svg
     width={width}
     height={height}
@@ -9,7 +8,6 @@ const FilledStarIcon = ({ width = 24, height = 24,color = "#1F2937", ...props })
     fill="none"
     {...props}
   >
-    <Path stroke="#E5E7EB" d="M21 18H.75V0H21v18Z" />
     <G clipPath="url(#clip)">
       <Path
         fill={color}

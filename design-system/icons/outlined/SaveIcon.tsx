@@ -1,26 +1,25 @@
-import * as React from "react"
-import Svg, { ClipPath, Defs, G, Path } from "react-native-svg"
+import Svg, { ClipPath, Defs, G, Path } from "react-native-svg";
 
-const SaveIcon = ({ width = 24, height = 24, ...props }) => (
+const SaveIcon = ({ width = 24, height = 24, color = "#1F2937", ...props }) => (
   <Svg
     width={width}
     height={height}
-    viewBox="0 0 24 24"
+    viewBox="0 0 16 18"
     fill="none"
     {...props}
   >
-    <G clipPath="url(#clip0)">
+    <G clipPath="url(#clip)">
       <Path
-        fill="#1F2937"
-        d="M.625 1.5a1.5 1.5 0 0 1 1.5-1.5v13.794l4.066-2.903a.746.746 0 0 1 .872 0l4.062 2.903V1.5h-9V0h9a1.5 1.5 0 0 1 1.5 1.5v13.75a.75.75 0 0 1-1.184.61l-4.816-3.438-4.816 3.437a.75.75 0 0 1-1.184-.609V1.5Z"
+        fill={color}
+        d="M13.875 0H2.125C1.5 0 1 .5 1 1.125v15.75C1 17.5 1.5 18 2.125 18h11.75c.625 0 1.125-.5 1.125-1.125V1.125C15 .5 14.5 0 13.875 0ZM8 15.75c-1.25 0-2.25-1-2.25-2.25S6.75 11.25 8 11.25s2.25 1 2.25 2.25S9.25 15.75 8 15.75ZM12.75 6.75h-9.5V2.25h9.5v4.5Z"
       />
     </G>
     <Defs>
-      <ClipPath id="clip0">
-        <Path fill="#fff" d="M.625 0h12v16h-12V0Z" />
+      <ClipPath id="clip">
+        <Path fill="#fff" d="M.875 0h14.25v18H.875V0Z" />
       </ClipPath>
     </Defs>
   </Svg>
-)
+);
 
-export default SaveIcon
+export default SaveIcon;
