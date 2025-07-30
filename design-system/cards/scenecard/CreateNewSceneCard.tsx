@@ -1,48 +1,50 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
+import { colors } from '../../colors/colors';
 import PlusIcon from '../../icons/filled/PlusIcon';
+import { Spacing } from '../../Layout/spacing';
+import { Typography } from '../../typography/typography';
 
 const CreateNewSceneCard = ({ onPress }: { onPress: () => void }) => {
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-      <View style={styles.iconContainer}>
-        <PlusIcon width={24} height={24} />
+    <TouchableOpacity 
+      style={{
+        backgroundColor: colors.surface,
+        borderRadius: 16,
+        borderWidth: 2,
+        borderColor: colors.border,
+        borderStyle: 'dashed',
+        padding: Spacing.sm,
+        minWidth: 280,
+        minHeight: 100,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: colors.text,
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 2 },
+      }} 
+      onPress={onPress}
+    >
+      <View style={{
+        backgroundColor: colors.disabled,
+        borderRadius: 50,
+        width: 32,
+        height: 32,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 6,
+      }}>
+        <PlusIcon width={16} height={16} />
       </View>
-      <Text style={styles.text}>Create New Scene</Text>
+      <Typography 
+        variant="caption" 
+        color={colors.disabled}
+        style={{ textAlign: 'center' }}
+      >
+        Create New Scene
+      </Typography>
     </TouchableOpacity>
   );
 };
 
 export default CreateNewSceneCard;
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    borderWidth: 2,
-    borderColor: '#9CA3AF',
-    borderStyle: 'dashed',
-    padding: 16,
-    minWidth: 280,
-    minHeight: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-  },
-  iconContainer: {
-    backgroundColor: '#374151',
-    borderRadius: 50,
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 6,
-  },
-  text: {
-    color: '#6B7280',
-    fontSize: 12,
-    textAlign: 'center',
-  },
-});
