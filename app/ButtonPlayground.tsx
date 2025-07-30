@@ -1,59 +1,41 @@
 // screens/ButtonPlayground.tsx
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { buttonData } from '../constans/constantfile';
 import { AppButton } from '../design-system/Buttons/Buttons';
-import TimeIcon from '../design-system/icons/filled/TimeIcon';
-
-
+import { colors } from '../design-system/colors/colors';
+import { Spacing } from '../design-system/Layout/spacing';
+import { Typography } from '../design-system/typography/typography';
 
 export default function ButtonPlayground() {
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* PRIMARY BUTTONS */}
-      <Text style={styles.sectionTitle}>Primary Buttons</Text>
-      <AppButton variant="primaryLarge" title="Start" onPress={() => {}} />
-      <AppButton variant="primaryMedium" title="Start" onPress={() => {}} />
-      <AppButton variant="primarySmall" title="Start" onPress={() => {}} />
-      <AppButton variant="primaryPressed" title="Start" onPress={() => {}} />
-      <AppButton variant="primaryDisabled" title="Start" disabled onPress={() => {}} />
-
-      {/* SECONDARY BUTTONS */}
-      <Text style={styles.sectionTitle}>Secondary Buttons</Text>
-      <AppButton variant="secondaryLarge" title="Start" onPress={() => {}} />
-      <AppButton variant="secondaryMedium" title="Start" onPress={() => {}} />
-      <AppButton variant="secondarySmall" title="Start" onPress={() => {}} />
-      <AppButton variant="secondaryPressed" title="Start" onPress={() => {}} />
-      <AppButton variant="secondaryDisabled" title="Start" disabled onPress={() => {}} />
-
-      {/* TEXT ONLY */}
-      <Text style={styles.sectionTitle}>Text Only</Text>
-      <AppButton variant="textOnlyLarge" title="Start" onPress={() => {}} />
-<AppButton variant="textOnlyMedium" title="Start" onPress={() => {}} />
-<AppButton variant="textOnlySmall" title="Start" onPress={() => {}} />
-<AppButton variant="textOnlyPressed" title="Start" onPress={() => {}} />
-<AppButton variant="textOnlyDisabled" title="Start" disabled onPress={() => {}} />
-      {/* ICON ONLY */}
-      <Text style={styles.sectionTitle}>Icon Only</Text>
-      <AppButton variant="iconOnlyLarge" icon={<TimeIcon size={20} />} onPress={() => {}} />
-<AppButton variant="iconOnlyMedium" icon={<TimeIcon size={20} />} onPress={() => {}} />
-<AppButton variant="iconOnlySmall" icon={<TimeIcon size={20} />} onPress={() => {}} />
-<AppButton variant="iconOnlyPressed" icon={<TimeIcon />} onPress={() => {}} />
-
-<AppButton variant="iconOnlyDisabled"  icon={<TimeIcon />} title="Start" disabled onPress={() => {}} />
-
-
+    <ScrollView 
+      contentContainerStyle={{ 
+        padding: Spacing.sm, 
+        gap: Spacing.sm, 
+        backgroundColor: colors.surface 
+      }}
+    >
+      {buttonData.map((section) => (
+        <View key={section.id}>
+          <Typography variant="h3" color={colors.text} style={{ marginVertical: Spacing.xs }}>
+            {section.section}
+          </Typography>
+          <View style={{ gap: Spacing.sm }}>
+            {section.buttons.map((button, index) => {
+              const buttonProps: any = {
+                variant: button.variant,
+                onPress: button.onPress,
+              };
+              
+              if ('title' in button) buttonProps.title = button.title;
+              if ('icon' in button) buttonProps.icon = button.icon;
+              if ('disabled' in button) buttonProps.disabled = button.disabled;
+              
+              return <AppButton key={index} {...buttonProps} />;
+            })}
+          </View>
+        </View>
+      ))}
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    gap: 16,
-    backgroundColor: '#fff',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginVertical: 8,
-  },
-});

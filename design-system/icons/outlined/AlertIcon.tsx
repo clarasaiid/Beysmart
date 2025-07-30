@@ -1,30 +1,25 @@
-import * as React from "react"
-import Svg, { ClipPath, Defs, G, Path } from "react-native-svg"
+import Svg, { ClipPath, Defs, G, Path } from "react-native-svg";
 
-const AlertIcon = ({ width = 16, height = 16, ...props }) => (
+const AlertIcon = ({ width = 24, height = 24, color = "#1F2937", ...props }) => (
   <Svg
-  width={width}
-  height={height}
-  viewBox="0 0 14 16"
-  fill="none"
+    width={width}
+    height={height}
+    viewBox="0 0 16 16"
+    fill="none"
+    {...props}
   >
-    <Path stroke="#E5E7EB" d="M14.125 16h-14V0h14v16Z" />
-    <G clipPath="url(#clip0)">
+    <G clipPath="url(#clip)">
       <Path
-        fill="#fff"
-        d="M7.125 0c-.553 0-1 .447-1 1v.56c-2.265.359-4 2.321-4 4.69v1.044a6.256 6.256 0 0 1-1.368 3.903l-.466.584A.748.748 0 0 0 .875 13h12.5a.75.75 0 0 0 .585-1.219l-.466-.581a6.271 6.271 0 0 1-1.369-3.906V6.25a4.751 4.751 0 0 0-4-4.69V1c0-.553-.447-1-1-1Zm0 3h.25a3.252 3.252 0 0 1 3.25 3.25v1.044c0 1.497.435 2.956 1.24 4.206h-9.48a7.761 7.761 0 0 0 1.24-4.206V6.25A3.252 3.252 0 0 1 6.875 3h.25Zm2 11h-4a2 2 0 0 0 .585 1.416A2 2 0 0 0 7.125 16a2 2 0 0 0 1.416-.584A2 2 0 0 0 9.125 14Z"
-      />
-      <Path
-        fill="#1F2937"
-        d="M7.125 0c-.553 0-1 .447-1 1v.56c-2.265.359-4 2.321-4 4.69v1.044a6.256 6.256 0 0 1-1.368 3.903l-.466.584A.748.748 0 0 0 .875 13h12.5a.75.75 0 0 0 .585-1.219l-.466-.581a6.271 6.271 0 0 1-1.369-3.906V6.25a4.751 4.751 0 0 0-4-4.69V1c0-.553-.447-1-1-1Zm0 3h.25a3.252 3.252 0 0 1 3.25 3.25v1.044c0 1.497.435 2.956 1.24 4.206h-9.48a7.761 7.761 0 0 0 1.24-4.206V6.25A3.252 3.252 0 0 1 6.875 3h.25Zm2 11h-4a2 2 0 0 0 .585 1.416A2 2 0 0 0 7.125 16a2 2 0 0 0 1.416-.584A2 2 0 0 0 9.125 14Z"
+        fill={color}
+        d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm1 13H7v-2h2v2zm0-3H7V5h2v5z"
       />
     </G>
     <Defs>
-      <ClipPath id="clip0">
-        <Path fill="#fff" d="M.125 0h14v16h-14V0Z" />
+      <ClipPath id="clip">
+        <Path fill="#fff" d="M.125 0h15v16h-15V0Z" />
       </ClipPath>
     </Defs>
   </Svg>
-)
+);
 
-export default AlertIcon
+export default AlertIcon;
