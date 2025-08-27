@@ -1,0 +1,33 @@
+# Python (Django REST)
+env/
+venv/
+ENV/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+*.pot
+*.pyc
+db.sqlite3
+
+# Environment files
+*.env
+.env
+
+# React Native
+node_modules/
+.expo/
+dist/
+build/
+ios/Pods/
+android/.gradle/
+android/app/build/
+
+# IDE/editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

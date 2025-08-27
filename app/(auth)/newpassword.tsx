@@ -1,0 +1,177 @@
+import axios from "axios";
+import { router, useLocalSearchParams } from 'expo-router';
+import React, { useState } from 'react';
+import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
+import { BASE_URL } from '../../constants/api';
+import { AppButton } from '../../design-system/Buttons/Buttons';
+import { colors } from '../../design-system/colors/colors';
+import { BackArrow, LockIcon, screwdriver as Screwdriver } from '../../design-system/icons';
+import { TextField } from '../../design-system/inputs';
+import { Margin } from '../../design-system/Layout/margins';
+import { Padding } from '../../design-system/Layout/padding';
+import { Spacing } from '../../design-system/Layout/spacing';
+import { Typography } from '../../design-system/typography/typography';
+
+
+const newpassword = () => {
+  const [new_password, setNewPassword] = useState('');
+  const [confirm_password, setConfirmPassword] = useState('');
+  const { email, phone_number } = useLocalSearchParams();
+
+  const handleResetPassword = async () => {
+    try {
+      const requestData = {
+        email: email || undefined, // This should come from previous screen
+        phone_number: phone_number || undefined, // This should come from previous screen
+        new_password,
+        confirm_password,
+       
+        user_type: 'CUSTOMER', // Default to customer
+      };
+      
+      console.log('Sending reset password request:', requestData);
+      console.log('API URL:', axios.post(`${BASE_URL}auth/reset-password/`, requestData));
+      
+      const response = await axios.post(`${BASE_URL}auth/reset-password/`, requestData);
+      
+      console.log('Password Updated Successfully:', response.data);
+      router.push({
+        pathname: '/(auth)/Resetcomplete' as never,
+        params: {  email: email || undefined, phone_number: phone_number || undefined}
+      });
+     
+      
+    } catch (error: any) {
+      console.error('Password Update failed:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      const errorMessage = error.response?.data?.message || error.message || 'Password Update failed. Please try again.';
+      Alert.alert('Password Update Failed', errorMessage);
+    }
+  };
+
+  const isDisabled = !new_password || !confirm_password || new_password !== confirm_password;
+
+  return (
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      {/* Header (fixed) */}
+      <View style={{ paddingTop: Spacing.md, ...Padding.screenHorizontal }}>
+        {/* Back Button */}
+        <TouchableOpacity
+          style={{
+            width: 48,
+            height: 48,
+            backgroundColor: colors.surface,
+            borderRadius: 12,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: Spacing.lg,
+          }}
+          onPress={() => {}}
+        >
+          <BackArrow width={24} height={24} color={colors.text} />
+        </TouchableOpacity>
+
+        {/* User Icon */}
+        <View style={{ alignItems: 'center', marginBottom: Spacing.lg }}>
+          <View
+            style={{
+              width: 96,
+              height: 96,
+              backgroundColor: colors.primary.base,
+              borderRadius: 48,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: Spacing.md,
+            }}
+          >
+            <Screwdriver width={32} height={32} color={colors.text} />
+          </View>
+          
+          <Typography variant="h1" style={{ marginBottom: Spacing.xs }}>
+            Reset Password
+          </Typography>
+          
+          <Typography variant="body" color={colors.secondaryText}>
+            Enter your new password
+          </Typography>
+        </View>
+      </View>
+
+      {/* Form (scrollable) */}
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          ...Padding.screenHorizontal,
+          paddingBottom: Spacing.xl,
+        }}
+      >
+        {/* Form Fields */}
+        <View style={{ ...Margin.betweenComponents }}>
+          <TextField
+            label="New Password"
+            value={new_password}
+            onChangeText={setNewPassword}
+            placeholder="Create a strong password"
+            secureTextEntry={true}
+          />
+        </View>
+
+        <View style={{ ...Margin.betweenComponents }}>
+          <TextField
+            label="Confirm Password"
+            value={confirm_password}
+            onChangeText={setConfirmPassword}
+            placeholder="Confirm your password"
+            secureTextEntry={true}
+          />
+        </View>
+
+        {/* Password Requirements */}
+        <View style={{ 
+          flexDirection: 'row', 
+          alignItems: 'center', 
+          marginTop: Spacing.xs 
+        }}>
+          <LockIcon width={16} height={16} color={colors.secondaryText} />
+          <Typography 
+            variant="caption" 
+            color={colors.secondaryText}
+            style={{ marginLeft: 4 }}
+          >
+            Password must be at least 8 characters long
+          </Typography>
+        </View>
+      </ScrollView>
+
+      {/* Footer (fixed) */}
+      <View style={{ ...Padding.screenHorizontal, paddingBottom: Spacing.lg }}>
+        <AppButton
+          variant={isDisabled ? 'primaryDisabled' : 'primaryLarge'}
+          title="Save Password"
+          onPress={handleResetPassword}
+          disabled={isDisabled}
+        />
+
+        <View style={{ 
+          flexDirection: 'row', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          marginTop: Spacing.lg 
+        }}>
+          <LockIcon width={16} height={16} color={colors.secondaryText} />
+          <Typography 
+            variant="caption" 
+            color={colors.secondaryText}
+            style={{ marginLeft: 4 }}
+          >
+            Your data is securely encrypted
+          </Typography>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+export default newpassword;
+
