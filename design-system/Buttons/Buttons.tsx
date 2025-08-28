@@ -86,11 +86,22 @@ export const AppButton: React.FC<ButtonProps> = ({
             }),
       }}
     >
+      {/* Title */}
+      {!isIconOnly && title && (
+        <Typography
+          variant="accent"
+          color={variantStyle.textColor}
+          style={{ fontWeight: 'bold' }}
+        >
+          {title}
+        </Typography>
+      )}
+
       {/* Icon */}
       {icon && (
         <View
           style={{
-            marginRight: title && !isIconOnly ? Spacing.xs : 0,
+            marginLeft: title && !isIconOnly ? Spacing.xs : 0,
           }}
         >
           {isIconOnly && React.isValidElement(icon) ? (
@@ -105,17 +116,6 @@ export const AppButton: React.FC<ButtonProps> = ({
             icon
           )}
         </View>
-      )}
-
-      {/* Title */}
-      {!isIconOnly && title && (
-        <Typography
-          variant="accent"
-          color={variantStyle.textColor}
-          style={{ fontWeight: 'bold' }}
-        >
-          {title}
-        </Typography>
       )}
     </TouchableOpacity>
   );

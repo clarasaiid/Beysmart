@@ -1,39 +1,33 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+# Python (Django REST)
+env/
+venv/
+ENV/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+*.pot
+*.pyc
+db.sqlite3
 
-# dependencies
+# Environment files
+*.env
+.env
+
+# React Native
 node_modules/
-
-# Expo
 .expo/
 dist/
-web-build/
-expo-env.d.ts
+build/
+ios/Pods/
+android/.gradle/
+android/app/build/
 
-# Native
-.kotlin/
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
+# IDE/editor
+.vscode/
+.idea/
 
-# Metro
-.metro-health-check*
-
-# debug
-npm-debug.*
-yarn-debug.*
-yarn-error.*
-
-# macOS
+# OS
 .DS_Store
-*.pem
-
-# local env files
-.env*.local
-
-# typescript
-*.tsbuildinfo
-
-app-example
+Thumbs.db

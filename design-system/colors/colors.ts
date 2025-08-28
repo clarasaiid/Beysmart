@@ -23,6 +23,7 @@
       darker: '#9F65D0',
       darkest: '#834CB3',
     },
+   
     text: '#1A1A1A',
     secondaryText: '#424242',
     disabled: '#6E6E6E',

@@ -1,0 +1,21 @@
+export { default as AlertIcon } from './AlertIcon';
+export { default as BathIcon } from './BathIcon';
+export { default as BedroomIcon } from './BedroomIcon';
+export { default as CalendarIcon } from './CalendarIcon';
+export { default as CorrectIcon } from './CorrectIcon';
+export { default as EnergyIcon } from './EnergyIcon';
+export { default as ErrorIcon } from './ErrorIcon';
+export { default as HeartIcon } from './HeartIcon';
+export { default as HomeIcon } from './HomeIcon';
+export { default as InfoIcon } from './InfoIcon';
+export { default as KitchenIcon } from './KitchenIcon';
+export { default as LightIcon } from './LightIcon';
+export { default as LivingIcon } from './LivingIcon';
+export { default as PlusIcon } from './PlusIcon';
+export { default as SaveIcon } from './SaveIcon';
+export { default as SettingsIcon } from './SettingsIcon';
+export { default as StarIcon } from './StarIcon';
+export { default as StatsIcon } from './StatsIcon';
+export { default as TimeIcon } from './TimeIcon';
+export { default as UserIcon } from './UserIcon';
+

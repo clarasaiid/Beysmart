@@ -17,6 +17,7 @@ interface TextFieldProps {
   showEyeIcon?: boolean;
   leftIcon?: React.ReactNode;
   disabled?: boolean;
+  keyboardType?: 'default' | 'number-pad' | 'decimal-pad' | 'numeric' | 'email-address' | 'phone-pad';
 }
 
 const TextField: React.FC<TextFieldProps> = ({
@@ -31,6 +32,7 @@ const TextField: React.FC<TextFieldProps> = ({
   showEyeIcon = false,
   leftIcon,
   disabled = false,
+  keyboardType = 'default',
 }) => {
   const [isSecure, setIsSecure] = useState(secureTextEntry);
 
@@ -50,7 +52,7 @@ const TextField: React.FC<TextFieldProps> = ({
   }
 
   return (
-    <View style={{ marginBottom: Spacing.md }}>
+    <View style={{ marginBottom: Spacing.sm }}>
       {label && (
         <Typography variant="body" style={{ marginBottom: Spacing.xs }}>
           {label}
@@ -78,6 +80,7 @@ const TextField: React.FC<TextFieldProps> = ({
           placeholderTextColor={colors.disabled}
           secureTextEntry={isSecure}
           editable={!disabled}
+          keyboardType={keyboardType}
           style={{
             flex: 1,
             paddingVertical: 12,
