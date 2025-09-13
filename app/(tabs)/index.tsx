@@ -121,12 +121,28 @@ const IconGalleryScreen = () => {
 
       {/* Icon Gallery */}
       <View style={styles.iconGallery}>
-        {Object.entries(Icons).map(([name, IconComponent]) => (
-          <View key={name} style={styles.iconBox}>
-            <IconComponent width={24} height={24} />
-            <Text style={styles.label}>{name}</Text>
-          </View>
-        ))}
+        {Object.entries(Icons)
+          .filter(([name, IconComponent]) => 
+            typeof IconComponent === 'function' && 
+            name !== 'getIconSize' && 
+            name !== 'renderIcon' && 
+            name !== 'createTabItems' && 
+            name !== 'isValidIconKey' && 
+            name !== 'getIconKeysByType' &&
+            !name.startsWith('FilledIcons') &&
+            !name.startsWith('OutlinedIcons') &&
+            // Only include actual icon components
+            (name.includes('Icon') || name === 'BackArrow' || name === 'Dropdown' || name === 'Lock' || name === 'CorrectIcon' || name === 'Phone' || name === 'screwdriver' || name === 'checkemail' || name === 'EmailIcon' || name === 'ImageIcon' || name === 'Whatsapp')
+          )
+          .map(([name, IconComponent]) => {
+            const Icon = IconComponent as React.ComponentType<{ width: number; height: number }>;
+            return (
+              <View key={name} style={styles.iconBox}>
+                <Icon width={24} height={24} />
+                <Text style={styles.label}>{name}</Text>
+              </View>
+            );
+          })}
       </View>
     </ScrollView>
   )

@@ -3,9 +3,8 @@ import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 import { BASE_URL } from '../../constants/api';
+import { AUTH_COPY, AUTH_TEXT, AUTH_THEME, AUTH_VISUALS, type AuthScreenCopy } from '../../design-system/auth/constants';
 import { AppButton } from '../../design-system/Buttons/Buttons';
-import { colors } from '../../design-system/colors/colors';
-import { BackArrow, checkemail as Checkemail, LockIcon } from '../../design-system/icons';
 import { TextField } from '../../design-system/inputs';
 import { Margin } from '../../design-system/Layout/margins';
 import { Padding } from '../../design-system/Layout/padding';
@@ -61,8 +60,10 @@ const ResetByEmail = () => {
 
   const isDisabled = !email.trim() || isLoading;
 
+  const copy = AUTH_COPY.resetByEmail as AuthScreenCopy;
+  const visuals = AUTH_VISUALS.resetByEmail;
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{ flex: 1, backgroundColor: AUTH_THEME.background }}>
       {/* Header */}
       <View style={{ paddingTop: Spacing.md, ...Padding.screenHorizontal }}>
         {/* Back Button */}
@@ -70,7 +71,7 @@ const ResetByEmail = () => {
           style={{
             width: 48,
             height: 48,
-            backgroundColor: colors.surface,
+            backgroundColor: AUTH_THEME.surface,
             borderRadius: 12,
             alignItems: 'center',
             justifyContent: 'center',
@@ -78,7 +79,7 @@ const ResetByEmail = () => {
           }}
           onPress={handleBack}
         >
-          <BackArrow width={24} height={24} color={colors.text} />
+          <visuals.backIcon width={24} height={24} color={AUTH_THEME.text} />
         </TouchableOpacity>
 
         {/* Email Icon */}
@@ -87,23 +88,25 @@ const ResetByEmail = () => {
             style={{
               width: 96,
               height: 96,
-              backgroundColor: colors.primary.base,
+              backgroundColor: visuals.headerCircleBg || AUTH_THEME.primary,
               borderRadius: 48,
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: Spacing.md,
             }}
           >
-            <Checkemail width={32} height={32} color={colors.text} />
+            <visuals.headerIcon width={32} height={32} color={AUTH_THEME.text} />
           </View>
           
           <Typography variant="h1" style={{ marginBottom: Spacing.xs }}>
-            Enter your email
+            {copy.title}
           </Typography>
           
-          <Typography variant="body" color={colors.secondaryText}>
-            We'll send you a verification code (please make sure your email is verified to receive the code)
-          </Typography>
+          {!!copy.subtitle && (
+            <Typography variant="body" color={AUTH_THEME.secondaryText}>
+              {copy.subtitle}
+            </Typography>
+          )}
         </View>
       </View>
 
@@ -117,16 +120,16 @@ const ResetByEmail = () => {
       >
         {/* Email Input Field */}
         <View style={{ ...Margin.betweenComponents }}>
-          <Typography variant="body" color={colors.text} style={{ marginBottom: Spacing.xs }}>
-            Email Address
+          <Typography variant="body" color={AUTH_THEME.text} style={{ marginBottom: Spacing.xs }}>
+            {copy.fields?.emailLabel || 'Email Address'}
           </Typography>
           <TextField
             value={email}
             onChangeText={setEmail}
-            placeholder="Your email address"
+            placeholder={copy.fields?.emailPlaceholder || 'Your email address'}
           />
           {error ? (
-            <Typography variant="caption" color={colors.error} style={{ marginTop: Spacing.xs }}>
+            <Typography variant="caption" color={AUTH_THEME.error} style={{ marginTop: Spacing.xs }}>
               {error}
             </Typography>
           ) : null}
@@ -137,7 +140,7 @@ const ResetByEmail = () => {
       <View style={{ ...Padding.screenHorizontal, paddingBottom: Spacing.lg }}>
         <AppButton
           variant={isDisabled ? 'primaryDisabled' : 'primaryLarge'}
-          title="Send code"
+          title={copy.buttons.primaryTitle}
           onPress={handleSendCode}
           disabled={isDisabled}
         />
@@ -148,13 +151,15 @@ const ResetByEmail = () => {
           justifyContent: 'center',
           marginTop: Spacing.lg 
         }}>
-          <LockIcon width={16} height={16} color={colors.secondaryText} />
+          {visuals.securityIcon ? (
+            <visuals.securityIcon width={16} height={16} color={AUTH_THEME.secondaryText} />
+          ) : null}
           <Typography 
             variant="caption" 
-            color={colors.secondaryText}
+            color={AUTH_THEME.secondaryText}
             style={{ marginLeft: 4 }}
           >
-            Your data is securely encrypted
+            {AUTH_TEXT.securityFooter}
           </Typography>
         </View>
       </View>

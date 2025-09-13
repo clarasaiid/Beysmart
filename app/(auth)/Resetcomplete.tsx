@@ -1,9 +1,8 @@
 import { router } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
+import { AUTH_COPY, AUTH_THEME, AUTH_VISUALS, type AuthScreenCopy } from '../../design-system/auth/constants';
 import { AppButton } from '../../design-system/Buttons/Buttons';
-import { colors } from '../../design-system/colors/colors';
-import Correct from '../../design-system/icons/outlined/correct';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
 
@@ -12,10 +11,13 @@ const ResetComplete = () => {
     router.replace('/(app)/home' as never);
   };
 
+  const copy = AUTH_COPY.resetComplete as AuthScreenCopy;
+  const visuals = AUTH_VISUALS.resetComplete;
+
   return (
     <View style={{
       flex: 1,
-      backgroundColor: colors.secondaryText,
+      backgroundColor: AUTH_THEME.background,
       alignItems: 'center',
       justifyContent: 'center',
       paddingHorizontal: Spacing.lg,
@@ -26,36 +28,32 @@ const ResetComplete = () => {
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-        <Correct 
-          width={80}
-          height={80}
-          color={colors.primary.base}
-        />
+        <visuals.headerIcon width={80} height={80} color={AUTH_THEME.primary} />
       </View>
 
       {/* Title */}
       <Typography 
         variant="h1" 
-        color={colors.surface}
+        color={AUTH_THEME.text}
         style={{
           textAlign: 'center',
           marginBottom: Spacing.md,
         }}
       >
-        Password Reset Complete
+        {copy.title}
       </Typography>
 
       {/* Description */}
       <Typography 
         variant="body" 
-        color="#9CA3AF"
+        color={AUTH_THEME.secondaryText}
         style={{
           textAlign: 'center',
           marginBottom: Spacing.xxl,
           paddingHorizontal: Spacing.lg,
         }}
       >
-        Your password has been successfully updated
+        {copy.subtitle}
       </Typography>
 
       {/* Button */}
@@ -65,7 +63,7 @@ const ResetComplete = () => {
       }}>
         <AppButton
           variant="primaryLarge"
-          title="Go to Login"
+          title={copy.buttons.primaryTitle}
           onPress={handleGoToLogin}
         />
       </View>

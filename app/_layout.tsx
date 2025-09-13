@@ -24,6 +24,10 @@ export default function RootLayout() {
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         {/* Show main app screens */}
         <Stack.Screen name="(app)" options={{ headerShown: false }} />
+        {/* Home flow screens */}
+        <Stack.Screen name="(home)" options={{ headerShown: false }} />
+        {/* Room flow screens */}
+        <Stack.Screen name="(room)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

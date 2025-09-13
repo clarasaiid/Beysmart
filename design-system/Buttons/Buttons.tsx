@@ -26,6 +26,8 @@ interface ButtonProps {
   icon?: React.ReactNode;
   onPress: () => void;
   disabled?: boolean;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
 // Simple wrapper component that forces centering
@@ -46,6 +48,8 @@ export const AppButton: React.FC<ButtonProps> = ({
   icon,
   onPress,
   disabled = false,
+  accessibilityLabel,
+  accessibilityHint,
 }) => {
   const variantStyle = buttonStyles[variant] as ButtonStyle;
   const isIconOnly = variant.startsWith('iconOnly');
@@ -63,6 +67,9 @@ export const AppButton: React.FC<ButtonProps> = ({
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
+      accessibilityRole="button"
       style={{
         backgroundColor: disabled
           ? variantStyle.disabledBackgroundColor ?? variantStyle.backgroundColor

@@ -6,6 +6,7 @@ import { BackArrow, HomeIcon, LockIcon, screwdriver as Screwdriver, UserIcon } f
 import { Padding } from '../../design-system/Layout/padding';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
+import AddHomePhoto from '../(home)/AddHomePhoto';
 
 const test = () => {
   const resetpassword = () => {
@@ -17,6 +18,11 @@ const test = () => {
     // Will redirect to register screen
     router.push('/(auth)/register');
   };
+
+//testing home.tsx
+const testhome = () => {
+  router.push('/(app)/home');
+};
 
   const handleBack = () => {
     router.back();
@@ -117,6 +123,16 @@ const test = () => {
             />
           </View>
         </TouchableOpacity>
+        <TouchableOpacity onPress={testnavigation}>
+          <Typography>Go to Test Navigation bars</Typography>
+        </TouchableOpacity>
+
+        {/* testing home.tsx */}
+        <TouchableOpacity onPress={testhome}>
+          <Typography>Go to Test Home</Typography>
+        </TouchableOpacity>
+
+       
 
         {/* WhatsApp Option */}
         <TouchableOpacity
