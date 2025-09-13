@@ -1,8 +1,8 @@
 import { router } from 'expo-router';
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
-import { colors } from '../../design-system/colors/colors';
-import { BackArrow, EmailIcon, LockIcon, screwdriver as Screwdriver, WhatsappIcon } from '../../design-system/icons';
+import { AUTH_COPY, AUTH_THEME, AUTH_VISUALS, type AuthScreenCopy } from '../../design-system/auth/constants';
+import { BackArrow, EmailIcon, WhatsappIcon } from '../../design-system/icons';
 import { Padding } from '../../design-system/Layout/padding';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
@@ -22,8 +22,11 @@ const ResetPassword = () => {
     router.back();
   };
 
+  const copy = AUTH_COPY.resetPassword as AuthScreenCopy;
+  const visuals = AUTH_VISUALS.resetPassword;
+
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{ flex: 1, backgroundColor: AUTH_THEME.background }}>
       {/* Header */}
       <View style={{ paddingTop: Spacing.md, ...Padding.screenHorizontal }}>
         {/* Back Button */}
@@ -31,7 +34,7 @@ const ResetPassword = () => {
           style={{
             width: 48,
             height: 48,
-            backgroundColor: colors.surface,
+            backgroundColor: AUTH_THEME.surface,
             borderRadius: 12,
             alignItems: 'center',
             justifyContent: 'center',
@@ -39,7 +42,7 @@ const ResetPassword = () => {
           }}
           onPress={handleBack}
         >
-          <BackArrow width={24} height={24} color={colors.text} />
+          <visuals.backIcon width={24} height={24} color={AUTH_THEME.text} />
         </TouchableOpacity>
 
         {/* Screwdriver Icon */}
@@ -48,22 +51,22 @@ const ResetPassword = () => {
             style={{
               width: 96,
               height: 96,
-              backgroundColor: colors.primary.base,
+              backgroundColor: visuals.headerCircleBg || AUTH_THEME.primary,
               borderRadius: 48,
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: Spacing.md,
             }}
           >
-            <Screwdriver width={32} height={32} color={colors.text} />
+            <visuals.headerIcon width={32} height={32} color={AUTH_THEME.text} />
           </View>
           
           <Typography variant="h1" style={{ marginBottom: Spacing.xs }}>
-            Reset Password
+            {copy.title}
           </Typography>
           
-          <Typography variant="body" color={colors.secondaryText}>
-            Where should we send your code?
+          <Typography variant="body" color={AUTH_THEME.secondaryText}>
+            {copy.subtitle}
           </Typography>
         </View>
       </View>
@@ -73,7 +76,7 @@ const ResetPassword = () => {
         {/* Email Option */}
         <TouchableOpacity
           style={{
-            backgroundColor: colors.surface,
+            backgroundColor: AUTH_THEME.surface,
             borderRadius: 12,
             padding: Spacing.md,
             marginBottom: Spacing.md,
@@ -88,14 +91,14 @@ const ResetPassword = () => {
               style={{
                 width: 48,
                 height: 48,
-                backgroundColor: colors.background,
+                backgroundColor: AUTH_THEME.background,
                 borderRadius: 24,
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginRight: Spacing.md,
               }}
             >
-              <EmailIcon width={24} height={24} color={colors.text} />
+              <EmailIcon width={24} height={24} color={AUTH_THEME.text} />
             </View>
             <Typography variant="body">Email</Typography>
           </View>
@@ -103,7 +106,7 @@ const ResetPassword = () => {
             style={{
               width: 24,
               height: 24,
-              backgroundColor: colors.background,
+              backgroundColor: AUTH_THEME.background,
               borderRadius: 12,
               alignItems: 'center',
               justifyContent: 'center',
@@ -112,7 +115,7 @@ const ResetPassword = () => {
             <BackArrow 
               width={16} 
               height={16} 
-              color={colors.text} 
+              color={AUTH_THEME.text} 
               style={{ transform: [{ rotate: '180deg' }] }}
             />
           </View>
@@ -121,7 +124,7 @@ const ResetPassword = () => {
         {/* WhatsApp Option */}
         <TouchableOpacity
           style={{
-            backgroundColor: colors.surface,
+            backgroundColor: AUTH_THEME.surface,
             borderRadius: 12,
             padding: Spacing.md,
             marginBottom: Spacing.md,
@@ -136,14 +139,14 @@ const ResetPassword = () => {
               style={{
                 width: 48,
                 height: 48,
-                backgroundColor: colors.background,
+                backgroundColor: AUTH_THEME.background,
                 borderRadius: 24,
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginRight: Spacing.md,
               }}
             >
-              <WhatsappIcon width={24} height={24} color={colors.text} />
+              <WhatsappIcon width={24} height={24} color={AUTH_THEME.text} />
             </View>
             <Typography variant="body">WhatsApp</Typography>
           </View>
@@ -151,7 +154,7 @@ const ResetPassword = () => {
             style={{
               width: 24,
               height: 24,
-              backgroundColor: colors.background,
+              backgroundColor: AUTH_THEME.background,
               borderRadius: 12,
               alignItems: 'center',
               justifyContent: 'center',
@@ -160,7 +163,7 @@ const ResetPassword = () => {
             <BackArrow 
               width={16} 
               height={16} 
-              color={colors.text} 
+              color={AUTH_THEME.text} 
               style={{ transform: [{ rotate: '180deg' }] }}
             />
           </View>
@@ -175,10 +178,12 @@ const ResetPassword = () => {
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-        <LockIcon width={16} height={16} color={colors.secondaryText} />
+        {visuals.securityIcon ? (
+          <visuals.securityIcon width={16} height={16} color={AUTH_THEME.secondaryText} />
+        ) : null}
         <Typography 
           variant="caption" 
-          color={colors.secondaryText}
+          color={AUTH_THEME.secondaryText}
           style={{ marginLeft: 4 }}
         >
           Your data is securely encrypted

@@ -18,6 +18,8 @@ interface TextFieldProps {
   leftIcon?: React.ReactNode;
   disabled?: boolean;
   keyboardType?: 'default' | 'number-pad' | 'decimal-pad' | 'numeric' | 'email-address' | 'phone-pad';
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
 const TextField: React.FC<TextFieldProps> = ({
@@ -33,6 +35,8 @@ const TextField: React.FC<TextFieldProps> = ({
   leftIcon,
   disabled = false,
   keyboardType = 'default',
+  accessibilityLabel,
+  accessibilityHint,
 }) => {
   const [isSecure, setIsSecure] = useState(secureTextEntry);
 
@@ -81,6 +85,8 @@ const TextField: React.FC<TextFieldProps> = ({
           secureTextEntry={isSecure}
           editable={!disabled}
           keyboardType={keyboardType}
+          accessibilityLabel={accessibilityLabel}
+          accessibilityHint={accessibilityHint}
           style={{
             flex: 1,
             paddingVertical: 12,

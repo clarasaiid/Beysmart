@@ -4,9 +4,10 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from "react";
 import { Alert, Image, TouchableOpacity, View } from 'react-native';
 import { BASE_URL } from '../../constants/api';
+import { AUTH_COPY, AUTH_TEXT, AUTH_THEME, AUTH_VISUALS, type AuthScreenCopy } from '../../design-system/auth/constants';
 import { AppButton } from '../../design-system/Buttons/Buttons';
 import { colors } from '../../design-system/colors/colors';
-import { BackArrow, ImageIcon, LockIcon, UserIcon } from '../../design-system/icons';
+import { ImageIcon } from '../../design-system/icons';
 import { Padding } from '../../design-system/Layout/padding';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
@@ -143,8 +144,11 @@ const ProfilePhoto = () => {
 
   const isDisabled = !selectedImage || isUploading;
 
+  const copy = AUTH_COPY.profilePhoto as AuthScreenCopy;
+  const visuals = AUTH_VISUALS.profilePhoto;
+
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{ flex: 1, backgroundColor: AUTH_THEME.background }}>
       {/* Header (fixed) */}
       <View style={{ paddingTop: Spacing.md, ...Padding.screenHorizontal }}>
         {/* Back Button */}
@@ -166,7 +170,7 @@ const ProfilePhoto = () => {
             }
           }}
         >
-          <BackArrow width={24} height={24} color={colors.text} />
+          <visuals.backIcon width={24} height={24} color={AUTH_THEME.text} />
         </TouchableOpacity>
 
         {/* User Icon */}
@@ -175,22 +179,22 @@ const ProfilePhoto = () => {
             style={{
               width: 96,
               height: 96,
-              backgroundColor: colors.primary.base,
+              backgroundColor: visuals.headerCircleBg || AUTH_THEME.primary,
               borderRadius: 48,
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: Spacing.md,
             }}
           >
-            <UserIcon width={32} height={32} color={colors.text} />
+            <visuals.headerIcon width={32} height={32} color={AUTH_THEME.text} />
           </View>
           
           <Typography variant="h1" style={{ marginBottom: Spacing.xs }}>
-            Profile Photo
+            {copy.title}
           </Typography>
           
-          <Typography variant="body" color={colors.secondaryText} style={{ textAlign: 'center' }}>
-            Your photo ensures a more secure and tailored experience for you and your household.
+          <Typography variant="body" color={AUTH_THEME.secondaryText} style={{ textAlign: 'center' }}>
+            {copy.subtitle}
           </Typography>
         </View>
       </View>
@@ -200,13 +204,13 @@ const ProfilePhoto = () => {
         <TouchableOpacity
           style={{
             borderWidth: 2,
-            borderColor: colors.border,
+            borderColor: AUTH_THEME.border,
             borderStyle: 'dashed',
             borderRadius: 12,
             padding: Spacing.xl,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: colors.surface,
+            backgroundColor: AUTH_THEME.surface,
             minHeight: 120,
           }}
           onPress={pickImage}
@@ -222,14 +226,14 @@ const ProfilePhoto = () => {
                   marginBottom: Spacing.sm,
                 }}
               />
-              <Typography variant="body" color={colors.secondaryText}>
+              <Typography variant="body" color={AUTH_THEME.secondaryText}>
                 Tap to change photo
               </Typography>
             </View>
           ) : (
             <View style={{ alignItems: 'center' }}>
-              <ImageIcon width={48} height={48} color={colors.secondaryText} />
-              <Typography variant="body" color={colors.secondaryText} style={{ marginTop: Spacing.sm }}>
+              <ImageIcon width={48} height={48} color={AUTH_THEME.secondaryText} />
+              <Typography variant="body" color={AUTH_THEME.secondaryText} style={{ marginTop: Spacing.sm }}>
                 Add Photo
               </Typography>
             </View>
@@ -241,7 +245,7 @@ const ProfilePhoto = () => {
       <View style={{ ...Padding.screenHorizontal, marginTop: 'auto', paddingBottom: Spacing.lg }}>
         <AppButton
           variant={isDisabled ? 'primaryDisabled' : 'primaryLarge'}
-          title={isUploading ? 'Uploading...' : 'Next'}
+          title={isUploading ? 'Uploading...' : copy.buttons.primaryTitle}
           onPress={handleProfilePhoto}
           disabled={isDisabled}
         />
@@ -266,13 +270,15 @@ const ProfilePhoto = () => {
           justifyContent: 'center',
           marginTop: Spacing.xl 
         }}>
-          <LockIcon width={16} height={16} color={colors.secondaryText} />
+          {visuals.securityIcon ? (
+            <visuals.securityIcon width={16} height={16} color={AUTH_THEME.secondaryText} />
+          ) : null}
           <Typography 
             variant="caption" 
-            color={colors.secondaryText}
+            color={AUTH_THEME.secondaryText}
             style={{ marginLeft: 4 }}
           >
-            Your data is securely encrypted
+            {AUTH_TEXT.securityFooter}
           </Typography>
         </View>
       </View>

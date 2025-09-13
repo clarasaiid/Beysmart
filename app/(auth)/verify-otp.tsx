@@ -4,18 +4,16 @@ import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 import { BASE_URL } from '../../constants/api';
+import { AUTH_COPY, AUTH_TEXT, AUTH_THEME, AUTH_VISUALS } from '../../design-system/auth/constants';
 import { AppButton } from '../../design-system/Buttons/Buttons';
-import { colors } from '../../design-system/colors/colors';
-import { BackArrow } from '../../design-system/icons';
-import Arrow from '../../design-system/icons/outlined/arrow';
-import LockIcon from '../../design-system/icons/outlined/Lock';
-import Message from '../../design-system/icons/outlined/message';
 import { OTPInputField } from '../../design-system/inputs';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
 
 const VerifyOTPScreen = () => {
   const { email, phone_number, flow } = useLocalSearchParams();
+  const copy = AUTH_COPY.verifyOtp as any;
+  const visuals = AUTH_VISUALS.verifyOtp;
   const [otp, setOtp] = useState(['', '', '', '']);
   const [timer, setTimer] = useState(59);
   const [canResend, setCanResend] = useState(false);
@@ -86,7 +84,7 @@ const VerifyOTPScreen = () => {
   const isOtpComplete = otp.every(digit => digit !== '');
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{ flex: 1, backgroundColor: AUTH_THEME.background }}>
     {/* Header (fixed) */}
     <View style={{ paddingTop: Spacing.md, ...Padding.screenHorizontal }}>
       {/* Back Button */}
@@ -94,7 +92,7 @@ const VerifyOTPScreen = () => {
         style={{
           width: 48, // icon container 48px (6x base unit)
           height: 48,
-          backgroundColor: colors.surface,
+          backgroundColor: AUTH_THEME.surface,
           borderRadius: 12,
           alignItems: 'center',
           justifyContent: 'center',
@@ -102,7 +100,7 @@ const VerifyOTPScreen = () => {
         }}
         onPress={() => {}}
       >
-        <BackArrow width={24} height={24} color={colors.text} />
+        <visuals.backIcon width={24} height={24} color={AUTH_THEME.text} />
       </TouchableOpacity>
       </View>
 
@@ -123,14 +121,14 @@ const VerifyOTPScreen = () => {
             style={{
               width: 96, // 12x base unit
               height: 96,
-              backgroundColor: colors.primary.base,
+              backgroundColor: visuals.headerCircleBg || AUTH_THEME.primary,
               borderRadius: 48,
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: Spacing.md,
             }}
           >
-            <Message width={32} height={32} color={colors.text} />
+            <visuals.headerIcon width={32} height={32} color={AUTH_THEME.text} />
           </View>
           </View>
           
@@ -139,19 +137,19 @@ const VerifyOTPScreen = () => {
         <Typography variant="h3" style={{
           textAlign: 'center',
           marginBottom: Spacing.sm,
-          color: colors.text,
+          color: AUTH_THEME.text,
         }}>
-          Verify Your Phone Number
+          {copy.title}
         </Typography>
 
         {/* Subtitle */}
         <Typography variant="body" style={{
           textAlign: 'center',
           marginBottom: Spacing.xl,
-          color: colors.secondaryText,
+          color: AUTH_THEME.secondaryText,
           paddingHorizontal: Spacing.md,
         }}>
-          We've sent a code on WhatsApp to Your Phone Number
+          {phone_number ? (copy.subtitlePhone || '') : (copy.subtitleEmail || '')}
         </Typography>
 
         {/* OTP Input Fields */}
@@ -181,12 +179,12 @@ const VerifyOTPScreen = () => {
           disabled={!canResend}
         >
           <Typography variant="body" style={{
-            color: colors.secondaryText,
+            color: AUTH_THEME.secondaryText,
           }}>
-            Resend code in{' '}
+            {copy.resendPrefix}{' '}
             <Typography variant="body" style={{
               fontWeight: '700',
-              color: colors.text,
+              color: AUTH_THEME.text,
             }}>
               {timer}s
             </Typography>
@@ -196,8 +194,8 @@ const VerifyOTPScreen = () => {
         {/* Continue Button */}
         <AppButton
           variant="primaryLarge"
-          title="Continue"
-          icon={<Arrow width={15} height={15} color={colors.text} />}
+          title={copy.continueTitle}
+          icon={visuals.actionIcon ? <visuals.actionIcon width={15} height={15} color={AUTH_THEME.text} /> : undefined}
           onPress={handleVerifyOTP}
           disabled={!isOtpComplete}
         />
@@ -208,13 +206,15 @@ const VerifyOTPScreen = () => {
           justifyContent: 'center',
           marginTop: Spacing.xl 
         }}>
-          <LockIcon width={16} height={16} color={colors.secondaryText} />
+          {visuals.securityIcon ? (
+            <visuals.securityIcon width={16} height={16} color={AUTH_THEME.secondaryText} />
+          ) : null}
           <Typography 
             variant="caption" 
-            color={colors.secondaryText}
+            color={AUTH_THEME.secondaryText}
             style={{ marginLeft: 4 }}
           >
-            Your data is securely encrypted
+            {AUTH_TEXT.securityFooter}
           </Typography>
         </View>
       </ScrollView>

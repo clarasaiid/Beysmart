@@ -3,9 +3,8 @@ import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 import { BASE_URL } from '../../constants/api';
+import { AUTH_COPY, AUTH_TEXT, AUTH_THEME, AUTH_VISUALS, type AuthScreenCopy } from '../../design-system/auth/constants';
 import { AppButton } from '../../design-system/Buttons/Buttons';
-import { colors } from '../../design-system/colors/colors';
-import { BackArrow, LockIcon, screwdriver as Screwdriver } from '../../design-system/icons';
 import { TextField } from '../../design-system/inputs';
 import { Margin } from '../../design-system/Layout/margins';
 import { Padding } from '../../design-system/Layout/padding';
@@ -52,8 +51,11 @@ const newpassword = () => {
 
   const isDisabled = !new_password || !confirm_password || new_password !== confirm_password;
 
+  const copy = AUTH_COPY.newPassword as AuthScreenCopy;
+  const visuals = AUTH_VISUALS.newPassword;
+
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{ flex: 1, backgroundColor: AUTH_THEME.background }}>
       {/* Header (fixed) */}
       <View style={{ paddingTop: Spacing.md, ...Padding.screenHorizontal }}>
         {/* Back Button */}
@@ -61,7 +63,7 @@ const newpassword = () => {
           style={{
             width: 48,
             height: 48,
-            backgroundColor: colors.surface,
+            backgroundColor: AUTH_THEME.surface,
             borderRadius: 12,
             alignItems: 'center',
             justifyContent: 'center',
@@ -69,7 +71,7 @@ const newpassword = () => {
           }}
           onPress={() => {}}
         >
-          <BackArrow width={24} height={24} color={colors.text} />
+          <visuals.backIcon width={24} height={24} color={AUTH_THEME.text} />
         </TouchableOpacity>
 
         {/* User Icon */}
@@ -78,22 +80,22 @@ const newpassword = () => {
             style={{
               width: 96,
               height: 96,
-              backgroundColor: colors.primary.base,
+              backgroundColor: visuals.headerCircleBg || AUTH_THEME.primary,
               borderRadius: 48,
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: Spacing.md,
             }}
           >
-            <Screwdriver width={32} height={32} color={colors.text} />
+            <visuals.headerIcon width={32} height={32} color={AUTH_THEME.text} />
           </View>
           
           <Typography variant="h1" style={{ marginBottom: Spacing.xs }}>
-            Reset Password
+            {copy.title}
           </Typography>
           
-          <Typography variant="body" color={colors.secondaryText}>
-            Enter your new password
+          <Typography variant="body" color={AUTH_THEME.secondaryText}>
+            {copy.subtitle}
           </Typography>
         </View>
       </View>
@@ -133,13 +135,15 @@ const newpassword = () => {
           alignItems: 'center', 
           marginTop: Spacing.xs 
         }}>
-          <LockIcon width={16} height={16} color={colors.secondaryText} />
+          {visuals.securityIcon ? (
+            <visuals.securityIcon width={16} height={16} color={AUTH_THEME.secondaryText} />
+          ) : null}
           <Typography 
             variant="caption" 
-            color={colors.secondaryText}
+            color={AUTH_THEME.secondaryText}
             style={{ marginLeft: 4 }}
           >
-            Password must be at least 8 characters long
+            {AUTH_TEXT.passwordRequirement}
           </Typography>
         </View>
       </ScrollView>
@@ -148,7 +152,7 @@ const newpassword = () => {
       <View style={{ ...Padding.screenHorizontal, paddingBottom: Spacing.lg }}>
         <AppButton
           variant={isDisabled ? 'primaryDisabled' : 'primaryLarge'}
-          title="Save Password"
+          title={copy.buttons.primaryTitle}
           onPress={handleResetPassword}
           disabled={isDisabled}
         />
@@ -159,13 +163,15 @@ const newpassword = () => {
           justifyContent: 'center',
           marginTop: Spacing.lg 
         }}>
-          <LockIcon width={16} height={16} color={colors.secondaryText} />
+          {visuals.securityIcon ? (
+            <visuals.securityIcon width={16} height={16} color={AUTH_THEME.secondaryText} />
+          ) : null}
           <Typography 
             variant="caption" 
-            color={colors.secondaryText}
+            color={AUTH_THEME.secondaryText}
             style={{ marginLeft: 4 }}
           >
-            Your data is securely encrypted
+            {AUTH_TEXT.securityFooter}
           </Typography>
         </View>
       </View>

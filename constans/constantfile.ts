@@ -5,7 +5,7 @@ export const sceneCardData = [
     {
         id: 1,
         title: "first-card",
-        icons: [React.createElement(Icons.FilledLightIcon, { width: 14, height: 14 }), React.createElement(Icons.FilledAlertIcon, { width: 14, height: 14 }), React.createElement(Icons.FilledHomeIcon, { width: 14, height: 14 })],
+        icons: [React.createElement(Icons.FilledIcons.LightIcon, { width: 14, height: 14 }), React.createElement(Icons.FilledIcons.AlertIcon, { width: 14, height: 14 }), React.createElement(Icons.FilledIcons.HomeIcon, { width: 14, height: 14 })],
         colors: ['#A78BFA', '#7DD3FC'],
         titleColor: 'white',
         buttonText: 'Activate',
@@ -52,22 +52,22 @@ export const buttonData = [
         id: 4,
         section: "Icon Only",
         buttons: [
-            { variant: "iconOnlyLarge", icon: React.createElement(Icons.FilledAlertIcon, { width: 20, height: 20 }), onPress: () => {} },
-            { variant: "iconOnlyMedium", icon: React.createElement(Icons.FilledAlertIcon, { width: 20, height: 20 }), onPress: () => {} },
-            { variant: "iconOnlySmall", icon: React.createElement(Icons.FilledAlertIcon, { width: 20, height: 20 }), onPress: () => {} },
-            { variant: "iconOnlyPressed", icon: React.createElement(Icons.FilledAlertIcon, { width: 20, height: 20 }), onPress: () => {} },
-            { variant: "iconOnlyDisabled", icon: React.createElement(Icons.FilledAlertIcon, { width: 20, height: 20 }), disabled: true, onPress: () => {} }
+            { variant: "iconOnlyLarge", icon: React.createElement(Icons.FilledIcons.AlertIcon, { width: 20, height: 20 }), onPress: () => {} },
+            { variant: "iconOnlyMedium", icon: React.createElement(Icons.FilledIcons.AlertIcon, { width: 20, height: 20 }), onPress: () => {} },
+            { variant: "iconOnlySmall", icon: React.createElement(Icons.FilledIcons.AlertIcon, { width: 20, height: 20 }), onPress: () => {} },
+            { variant: "iconOnlyPressed", icon: React.createElement(Icons.FilledIcons.AlertIcon, { width: 20, height: 20 }), onPress: () => {} },
+            { variant: "iconOnlyDisabled", icon: React.createElement(Icons.FilledIcons.AlertIcon, { width: 20, height: 20 }), disabled: true, onPress: () => {} }
         ]
     },
     {
         id: 5,
         section: "Icon Only - Different Icons",
         buttons: [
-            { variant: "iconOnlyMedium", icon: React.createElement(Icons.FilledLightIcon, { width: 20, height: 20 }), onPress: () => {} },
-            { variant: "iconOnlyMedium", icon: React.createElement(Icons.FilledHomeIcon, { width: 20, height: 20 }), onPress: () => {} },
-            { variant: "iconOnlyMedium", icon: React.createElement(Icons.FilledSettingsIcon, { width: 20, height: 20 }), onPress: () => {} },
-            { variant: "iconOnlyMedium", icon: React.createElement(Icons.FilledStarIcon, { width: 20, height: 20 }), onPress: () => {} },
-            { variant: "iconOnlyMedium", icon: React.createElement(Icons.FilledHeartIcon, { width: 20, height: 20 }), onPress: () => {} }
+            { variant: "iconOnlyMedium", icon: React.createElement(Icons.FilledIcons.LightIcon, { width: 20, height: 20 }), onPress: () => {} },
+            { variant: "iconOnlyMedium", icon: React.createElement(Icons.FilledIcons.HomeIcon, { width: 20, height: 20 }), onPress: () => {} },
+            { variant: "iconOnlyMedium", icon: React.createElement(Icons.FilledIcons.SettingsIcon, { width: 20, height: 20 }), onPress: () => {} },
+            { variant: "iconOnlyMedium", icon: React.createElement(Icons.FilledIcons.StarIcon, { width: 20, height: 20 }), onPress: () => {} },
+            { variant: "iconOnlyMedium", icon: React.createElement(Icons.FilledIcons.HeartIcon, { width: 20, height: 20 }), onPress: () => {} }
         ]
     }
 ]

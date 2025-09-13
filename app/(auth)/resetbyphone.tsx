@@ -3,45 +3,26 @@ import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { FlatList, Modal, ScrollView, TouchableOpacity, View } from 'react-native';
 import { BASE_URL } from '../../constants/api';
+import { AUTH_COPY, AUTH_COUNTRIES, AUTH_TEXT, AUTH_THEME, AUTH_VISUALS, type AuthScreenCopy } from '../../design-system/auth/constants';
 import { AppButton } from '../../design-system/Buttons/Buttons';
 import { colors } from '../../design-system/colors/colors';
-import { BackArrow, DropdownIcon, LockIcon, Phone } from '../../design-system/icons';
 import { TextField } from '../../design-system/inputs';
 import { Margin } from '../../design-system/Layout/margins';
 import { Padding } from '../../design-system/Layout/padding';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
 
-// Country data with country codes
-const countries = [
-  { name: 'Egypt', code: '+20' },
-  { name: 'United States', code: '+1' },
-  { name: 'United Kingdom', code: '+44' },
-  { name: 'Germany', code: '+49' },
-  { name: 'France', code: '+33' },
-  { name: 'Italy', code: '+39' },
-  { name: 'Spain', code: '+34' },
-  { name: 'Canada', code: '+1' },
-  { name: 'Australia', code: '+61' },
-  { name: 'India', code: '+91' },
-  { name: 'China', code: '+86' },
-  { name: 'Japan', code: '+81' },
-  { name: 'Brazil', code: '+55' },
-  { name: 'Mexico', code: '+52' },
-  { name: 'Saudi Arabia', code: '+966' },
-  { name: 'UAE', code: '+971' },
-  { name: 'Turkey', code: '+90' },
-  { name: 'South Africa', code: '+27' },
-  { name: 'Nigeria', code: '+234' },
-  { name: 'Kenya', code: '+254' },
-];
+// Country data from design system constants
+const countries = AUTH_COUNTRIES.map(c => ({ name: c.name, code: c.dial }));
 
-const ResetByPhone = () => {
+export default function ResetByPhone() {
+  const copy = AUTH_COPY.resetByPhone as AuthScreenCopy;
   const [selectedCountry, setSelectedCountry] = useState(countries[0]); // Default to Egypt
   const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showCountryPicker, setShowCountryPicker] = useState(false);
+  const visuals = AUTH_VISUALS.resetByPhone;
 
   const handleBack = () => {
     router.back();
@@ -92,7 +73,7 @@ const ResetByPhone = () => {
   const isDisabled = !phoneNumber.trim() || isLoading;
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{ flex: 1, backgroundColor: AUTH_THEME.background }}>
       {/* Header */}
       <View style={{ paddingTop: Spacing.md, ...Padding.screenHorizontal }}>
         {/* Back Button */}
@@ -100,7 +81,7 @@ const ResetByPhone = () => {
           style={{
             width: 48,
             height: 48,
-            backgroundColor: colors.surface,
+            backgroundColor: AUTH_THEME.surface,
             borderRadius: 12,
             alignItems: 'center',
             justifyContent: 'center',
@@ -108,7 +89,7 @@ const ResetByPhone = () => {
           }}
           onPress={handleBack}
         >
-          <BackArrow width={24} height={24} color={colors.text} />
+          <visuals.backIcon width={24} height={24} color={AUTH_THEME.text} />
         </TouchableOpacity>
 
         {/* Phone Icon */}
@@ -117,23 +98,25 @@ const ResetByPhone = () => {
             style={{
               width: 96,
               height: 96,
-              backgroundColor: colors.primary.base,
+              backgroundColor: visuals.headerCircleBg || AUTH_THEME.primary,
               borderRadius: 48,
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: Spacing.md,
             }}
           >
-            <Phone width={32} height={32} color={colors.text} />
+            <visuals.headerIcon width={32} height={32} color={AUTH_THEME.text} />
           </View>
           
           <Typography variant="h1" style={{ marginBottom: Spacing.xs }}>
-            Enter your phone
+            {copy.title}
           </Typography>
           
-          <Typography variant="body" color={colors.secondaryText}>
-            We'll send you a verification code
-          </Typography>
+          {!!copy.subtitle && (
+            <Typography variant="body" color={AUTH_THEME.secondaryText}>
+              {copy.subtitle}
+            </Typography>
+          )}
         </View>
       </View>
 
@@ -147,33 +130,35 @@ const ResetByPhone = () => {
       >
         {/* Country/Region Dropdown */}
         <View style={{ ...Margin.betweenComponents }}>
-          <Typography variant="body" color={colors.text} style={{ marginBottom: Spacing.xs }}>
-            Country/Region
+          <Typography variant="body" color={AUTH_THEME.text} style={{ marginBottom: Spacing.xs }}>
+            {copy.fields?.countryRegionLabel || 'Country/Region'}
           </Typography>
           <TouchableOpacity
             style={{
-              backgroundColor: colors.surface,
+              backgroundColor: AUTH_THEME.surface,
               borderRadius: 12,
               padding: Spacing.md,
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
               borderWidth: 1,
-              borderColor: colors.border,
+              borderColor: AUTH_THEME.border,
             }}
             onPress={() => setShowCountryPicker(true)}
           >
             <Typography variant="body" color={colors.text}>
               {selectedCountry.name}
             </Typography>
-            <DropdownIcon width={20} height={20} color={colors.secondaryText} />
+            {visuals.dropdownIcon ? (
+              <visuals.dropdownIcon width={20} height={20} color={AUTH_THEME.secondaryText} />
+            ) : null}
           </TouchableOpacity>
         </View>
 
         {/* Phone Number Input */}
         <View style={{ ...Margin.betweenComponents }}>
-          <Typography variant="body" color={colors.text} style={{ marginBottom: Spacing.xs }}>
-            Phone number
+          <Typography variant="body" color={AUTH_THEME.text} style={{ marginBottom: Spacing.xs }}>
+            {copy.fields?.phoneLabel || 'Phone number'}
           </Typography>
           <View style={{ flexDirection: 'row', gap: Spacing.xs }}>
             {/* Country Code */}
@@ -183,13 +168,13 @@ const ResetByPhone = () => {
                 borderRadius: 12,
                 padding: Spacing.md,
                 borderWidth: 1,
-                borderColor: colors.border,
+                borderColor: AUTH_THEME.border,
                 minWidth: 80,
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <Typography variant="body" color={colors.text}>
+              <Typography variant="body" color={AUTH_THEME.text}>
                 {selectedCountry.code}
               </Typography>
             </View>
@@ -199,14 +184,14 @@ const ResetByPhone = () => {
               <TextField
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
-                placeholder="(123) 456-7890"
+                placeholder={copy.fields?.phonePlaceholder || '(123) 456-7890'}
                 keyboardType="phone-pad"
               />
             </View>
           </View>
           
           {error ? (
-            <Typography variant="caption" color={colors.error} style={{ marginTop: Spacing.xs }}>
+            <Typography variant="caption" color={AUTH_THEME.error} style={{ marginTop: Spacing.xs }}>
               {error}
             </Typography>
           ) : null}
@@ -217,7 +202,7 @@ const ResetByPhone = () => {
       <View style={{ ...Padding.screenHorizontal, paddingBottom: Spacing.lg }}>
         <AppButton
           variant={isDisabled ? 'primaryDisabled' : 'primaryLarge'}
-          title="Send code"
+          title={copy.buttons.primaryTitle}
           onPress={handleSendCode}
           disabled={isDisabled}
         />
@@ -228,13 +213,15 @@ const ResetByPhone = () => {
           justifyContent: 'center',
           marginTop: Spacing.lg 
         }}>
-          <LockIcon width={16} height={16} color={colors.secondaryText} />
+          {visuals.securityIcon ? (
+            <visuals.securityIcon width={16} height={16} color={AUTH_THEME.secondaryText} />
+          ) : null}
           <Typography 
             variant="caption" 
-            color={colors.secondaryText}
+            color={AUTH_THEME.secondaryText}
             style={{ marginLeft: 4 }}
           >
-            Your data is securely encrypted
+            {AUTH_TEXT.securityFooter}
           </Typography>
         </View>
       </View>
@@ -252,7 +239,7 @@ const ResetByPhone = () => {
           justifyContent: 'flex-end'
         }}>
           <View style={{ 
-            backgroundColor: colors.background,
+            backgroundColor: AUTH_THEME.background,
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             padding: Spacing.lg,
@@ -266,7 +253,7 @@ const ResetByPhone = () => {
             }}>
               <Typography variant="h2">Select Country</Typography>
               <TouchableOpacity onPress={() => setShowCountryPicker(false)}>
-                <Typography variant="body" color={colors.primary.base}>Cancel</Typography>
+                <Typography variant="body" color={AUTH_THEME.primary}>Cancel</Typography>
               </TouchableOpacity>
             </View>
             
@@ -278,7 +265,7 @@ const ResetByPhone = () => {
                   style={{
                     padding: Spacing.md,
                     borderBottomWidth: 1,
-                    borderBottomColor: colors.border,
+                    borderBottomColor: AUTH_THEME.border,
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center'
@@ -286,7 +273,7 @@ const ResetByPhone = () => {
                   onPress={() => selectCountry(item)}
                 >
                   <Typography variant="body">{item.name}</Typography>
-                  <Typography variant="body" color={colors.secondaryText}>{item.code}</Typography>
+                  <Typography variant="body" color={AUTH_THEME.secondaryText}>{item.code}</Typography>
                 </TouchableOpacity>
               )}
             />
@@ -297,6 +284,5 @@ const ResetByPhone = () => {
   );
 };
 
-export default ResetByPhone;
 
 

@@ -35,5 +35,12 @@
     error: '#EF4444',
     warning: '#F59E0B',
     info: '#3B82F6',
+
+    navBarBackground: '#374151',
+    notactiveicon: '#9CA3AF',
+    completedstep:'#2E7DFF',
+    activestep:'#484848',
+    inactivestep:'#E5E7EB',
+    roomtypeSelected:'#007AFF',
   };
   

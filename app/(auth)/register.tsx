@@ -5,32 +5,38 @@ import { Alert, Modal, ScrollView, TouchableOpacity, View } from 'react-native';
 import { BASE_URL } from '../../constants/api';
 
 // Design System imports
+import { AUTH_COPY, AUTH_COUNTRIES, AUTH_TEXT, AUTH_THEME, AUTH_VISUALS, type AuthScreenCopy } from '../../design-system/auth/constants';
 import { AppButton } from '../../design-system/Buttons/Buttons';
-import { colors } from '../../design-system/colors/colors';
-import { BackArrow, DropdownIcon, LockIcon, UserIcon } from '../../design-system/icons';
+// Icons will be sourced from AUTH_VISUALS
 import TextField from '../../design-system/inputs/TextField';
 import { Margin } from '../../design-system/Layout/margins';
 import { Padding } from '../../design-system/Layout/padding';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
 
-const Register: React.FC = () => {
+ export default function Register()  {
   const [email, setEmail] = useState('');
-  const countries = [
-    { name: 'Egypt', dial: '+20' },
-    { name: 'United States', dial: '+1' },
-    { name: 'United Kingdom', dial: '+44' },
-    { name: 'Saudi Arabia', dial: '+966' },
-    { name: 'United Arab Emirates', dial: '+971' },
-    { name: 'France', dial: '+33' },
-    { name: 'Germany', dial: '+49' },
-    { name: 'India', dial: '+91' },
-    { name: 'Canada', dial: '+1' },
-    { name: 'Brazil', dial: '+55' },
-  ];
+  const [emailError, setEmailError] = useState('');
+  const countries = AUTH_COUNTRIES;
   const [selectedCountry, setSelectedCountry] = useState(countries[0]);
   const [countryPickerVisible, setCountryPickerVisible] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
+
+  // Email validation function
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Handle email input change with validation
+  const handleEmailChange = (text: string) => {
+    setEmail(text);
+    if (text.length > 0 && !validateEmail(text)) {
+      setEmailError('Please enter a valid email address (e.g., user@example.com)');
+    } else {
+      setEmailError('');
+    }
+  };
 
   const handleRegister = async () => {
     try {
@@ -40,31 +46,51 @@ const Register: React.FC = () => {
         country: selectedCountry.name,
       };
       
+      console.log('=== REGISTRATION DEBUG START ===');
       console.log('Sending registration request:', requestData);
       console.log('API URL:', `${BASE_URL}auth/register/`);
       
-      const response = await axios.post(`${BASE_URL}auth/register/`, requestData);
+      // Add timeout to catch hanging requests
+      const response = await axios.post(`${BASE_URL}auth/register/`, requestData, {
+        timeout: 15000, // 15 seconds timeout
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       
-      console.log('Registration successful:', response.data);
-      // Navigate to OTP verification screen with user data
+      console.log('=== API RESPONSE ===');
+      console.log('Response status:', response.status);
+      console.log('Response data:', response.data);
+      
       router.push({
         pathname: '/(auth)/verify-otp', 
         params: {email: email, phone_number: phoneNumber, flow: 'register'}
       });
       
-    } catch (error: any) {
-      console.error('Registration failed:', error);
-      console.error('Error response:', error.response?.data);
-      console.error('Error status:', error.response?.status);
+      console.log('=== NAVIGATION COMPLETED ===');
+      
+    }  catch (error: any) {
+      console.log('=== ERROR CAUGHT ===');
+      console.error('Full error object:', error);
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
+      console.error('Error response status:', error.response?.status);
+      console.error('Error response data:', error.response?.data);
+      console.error('Error response headers:', error.response?.headers);
+      console.error('Error config:', error.config);
+      
       const errorMessage = error.response?.data?.message || error.message || 'Registration failed. Please try again.';
       Alert.alert('Registration Failed', errorMessage);
     }
-  };
+  }
+  const isDisabled = !email || !phoneNumber || emailError !== '';
 
-  const isDisabled = !email || !phoneNumber;
+  const copy = AUTH_COPY.register as AuthScreenCopy;
+
+  const visuals = AUTH_VISUALS.register;
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{ flex: 1, backgroundColor: AUTH_THEME.background }}>
       {/* Header (fixed) */}
       <View style={{ paddingTop: Spacing.xs, ...Padding.screenHorizontal }}>
         {/* Back Button */}
@@ -72,7 +98,7 @@ const Register: React.FC = () => {
           style={{
             width: 48, // icon container 48px (6x base unit)
             height: 48,
-            backgroundColor: colors.surface,
+            backgroundColor: AUTH_THEME.surface,
             borderRadius: 12,
             alignItems: 'center',
             justifyContent: 'center',
@@ -80,7 +106,7 @@ const Register: React.FC = () => {
           }}
           onPress={() => {}}
         >
-          <BackArrow width={24} height={24} color={colors.text} />
+          <visuals.backIcon width={24} height={24} color={AUTH_THEME.text} />
         </TouchableOpacity>
 
         {/* User Icon */}
@@ -89,23 +115,25 @@ const Register: React.FC = () => {
             style={{
               width: 96, // 12x base unit
               height: 96,
-              backgroundColor: colors.primary.base,
+              backgroundColor: visuals.headerCircleBg || AUTH_THEME.primary,
               borderRadius: 48,
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: Spacing.md,
             }}
           >
-            <UserIcon width={32} height={32} color={colors.text} />
+            <visuals.headerIcon width={32} height={32} color={AUTH_THEME.text} />
           </View>
           
           <Typography variant="h1" style={{ marginBottom: Spacing.xs }}>
-            Welcome To Beysmart
+            {copy.title}
           </Typography>
           
-          <Typography variant="body" color={colors.secondaryText}>
-            Create Your Account
-          </Typography>
+          {!!copy.subtitle && (
+            <Typography variant="body" color={AUTH_THEME.secondaryText}>
+              {copy.subtitle}
+            </Typography>
+          )}
         </View>
       </View>
 
@@ -120,27 +148,29 @@ const Register: React.FC = () => {
         {/* Form Fields */}
         <View style={{ ...Margin.betweenComponents }}>
           <TextField
-            label="Email Address"
+            label={copy.fields?.emailLabel || 'Email Address'}
             value={email}
-            onChangeText={setEmail}
-            placeholder="Your email address"
+            onChangeText={handleEmailChange}
+            placeholder={copy.fields?.emailPlaceholder || 'Your email address'}
+            error={emailError}
+            keyboardType="email-address"
           />
         </View>
 
         <View style={{ ...Margin.betweenComponents }}>
           <View style={{ marginBottom: Spacing.xs }}>
             <Typography variant="body" style={{ marginBottom: Spacing.xs }}>
-              Country/Region
+              {copy.fields?.countryRegionLabel || 'Country/Region'}
             </Typography>
           </View>
           <TouchableOpacity
             style={{
               borderWidth: 1,
-              borderColor: colors.border,
+              borderColor: AUTH_THEME.border,
               borderRadius: 8,
               paddingHorizontal: Spacing.sm, // 16px input horizontal padding
               paddingVertical: 12, // matches TextField content height guidance
-              backgroundColor: colors.surface,
+              backgroundColor: AUTH_THEME.surface,
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -150,21 +180,23 @@ const Register: React.FC = () => {
             <Typography variant="body" style={{ fontWeight: 'bold' }}>
               {selectedCountry.name}
             </Typography>
-            <DropdownIcon width={16} height={16} color={colors.secondaryText} />
+            {visuals.dropdownIcon ? (
+              <visuals.dropdownIcon width={16} height={16} color={AUTH_THEME.secondaryText} />
+            ) : null}
           </TouchableOpacity>
         </View>
 
         <View style={{ ...Margin.betweenComponents }}>
           <TextField
-            label="Phone number"
+            label={copy.fields?.phoneLabel || 'Phone number'}
             value={phoneNumber}
             onChangeText={setPhoneNumber}
-            placeholder="(123) 456-7890"
+            placeholder={copy.fields?.phonePlaceholder || '(123) 456-7890'}
             leftIcon={
               <View style={{ 
                 paddingRight: 8, 
                 borderRightWidth: 1, 
-                borderRightColor: colors.border,
+                borderRightColor: AUTH_THEME.border,
                 marginRight: 8
               }}>
                 <Typography variant="body" style={{ fontWeight: 'bold' }}>
@@ -180,14 +212,13 @@ const Register: React.FC = () => {
             alignItems: 'center', 
             marginTop: Spacing.xs 
           }}>
-            {/* TODO: replace with a WhatsApp icon from the design system if added */}
-            <UserIcon width={16} height={16} color={colors.secondaryText} />
+            <visuals.headerIcon width={16} height={16} color={AUTH_THEME.secondaryText} />
             <Typography 
               variant="caption" 
-              color={colors.secondaryText}
+              color={AUTH_THEME.secondaryText}
               style={{ marginLeft: 4 }}
             >
-              Make sure the number you enter has active WhatsApp.
+              {AUTH_TEXT.whatsappHint}
             </Typography>
           </View>
         </View>
@@ -201,10 +232,10 @@ const Register: React.FC = () => {
         onRequestClose={() => setCountryPickerVisible(false)}
       >
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'flex-end' }}>
-          <View style={{ backgroundColor: colors.surface, borderTopLeftRadius: 16, borderTopRightRadius: 16, maxHeight: '70%', paddingHorizontal: Spacing.sm, paddingVertical: Spacing.md }}>
+          <View style={{ backgroundColor: AUTH_THEME.surface, borderTopLeftRadius: 16, borderTopRightRadius: 16, maxHeight: '70%', paddingHorizontal: Spacing.sm, paddingVertical: Spacing.md }}>
             <View style={{ alignItems: 'flex-end', marginBottom: Spacing.xs }}>
               <TouchableOpacity onPress={() => setCountryPickerVisible(false)}>
-                <Typography variant="accent" color={colors.secondaryText}>Close</Typography>
+                <Typography variant="accent" color={AUTH_THEME.secondaryText}>Close</Typography>
               </TouchableOpacity>
             </View>
             <Typography variant="h3" style={{ marginBottom: Spacing.sm }}>Select Country/Region</Typography>
@@ -213,10 +244,10 @@ const Register: React.FC = () => {
                 <TouchableOpacity
                   key={c.name}
                   onPress={() => { setSelectedCountry(c); setCountryPickerVisible(false); }}
-                  style={{ paddingVertical: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: colors.border }}
+                  style={{ paddingVertical: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: AUTH_THEME.border }}
                 >
                   <Typography variant="body">{c.name}</Typography>
-                  <Typography variant="body" color={colors.secondaryText}>{c.dial}</Typography>
+                  <Typography variant="body" color={AUTH_THEME.secondaryText}>{c.dial}</Typography>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -228,7 +259,7 @@ const Register: React.FC = () => {
       <View style={{ ...Padding.screenHorizontal, paddingBottom: Spacing.lg }}>
         <AppButton
           variant={isDisabled ? 'primaryDisabled' : 'primaryLarge'}
-          title="Next"
+          title={copy.buttons.primaryTitle}
           onPress={handleRegister}
           disabled={isDisabled}
         />
@@ -239,13 +270,15 @@ const Register: React.FC = () => {
           justifyContent: 'center',
           marginTop: Spacing.lg 
         }}>
-          <LockIcon width={16} height={16} color={colors.secondaryText} />
+          {visuals.securityIcon ? (
+            <visuals.securityIcon width={16} height={16} color={AUTH_THEME.secondaryText} />
+          ) : null}
           <Typography 
             variant="caption" 
-            color={colors.secondaryText}
+            color={AUTH_THEME.secondaryText}
             style={{ marginLeft: 4 }}
           >
-            Your data is securely encrypted
+            {AUTH_TEXT.securityFooter}
           </Typography>
         </View>
       </View>
@@ -254,6 +287,6 @@ const Register: React.FC = () => {
 };
 
 
-export default Register;
+
 
 
