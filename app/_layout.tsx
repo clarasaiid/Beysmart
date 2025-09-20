@@ -10,6 +10,7 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Qebram: require('../assets/fonts/qebram-gxp51.ttf'),
   });
 
   if (!loaded) {
@@ -20,6 +21,11 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="loginpage" options={{ headerShown: false }} />
+        <Stack.Screen name="phonelogin" options={{ headerShown: false }} />
+        <Stack.Screen name="verifycode" options={{ headerShown: false }} />
+        <Stack.Screen name="emaillogin" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>

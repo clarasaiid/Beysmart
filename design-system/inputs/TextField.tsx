@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { TextInput, TouchableOpacity, View } from 'react-native';
+import { TextInput, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { colors } from '../colors/colors';
 import { Spacing } from '../Layout/spacing';
 import { Typography } from '../typography/typography';
@@ -17,6 +17,7 @@ interface TextFieldProps {
   showEyeIcon?: boolean;
   leftIcon?: React.ReactNode;
   disabled?: boolean;
+  containerStyle?: ViewStyle;
 }
 
 const TextField: React.FC<TextFieldProps> = ({
@@ -31,6 +32,7 @@ const TextField: React.FC<TextFieldProps> = ({
   showEyeIcon = false,
   leftIcon,
   disabled = false,
+  containerStyle,
 }) => {
   const [isSecure, setIsSecure] = useState(secureTextEntry);
 
@@ -66,6 +68,8 @@ const TextField: React.FC<TextFieldProps> = ({
           paddingHorizontal: Spacing.sm,
           backgroundColor: disabled ? colors.background : colors.surface,
           opacity: disabled ? 0.6 : 1,
+          height: 48,
+          ...(containerStyle || {}),
         }}
       >
         {leftIcon && (
@@ -80,7 +84,7 @@ const TextField: React.FC<TextFieldProps> = ({
           editable={!disabled}
           style={{
             flex: 1,
-            paddingVertical: 12,
+            paddingVertical: 0,
             color: disabled ? colors.disabled : colors.text,
           }}
         />
