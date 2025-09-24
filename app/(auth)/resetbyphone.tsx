@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import { FlatList, Modal, ScrollView, TouchableOpacity, View } from 'react-native';
 import { BASE_URL } from '../../constants/api';
@@ -11,12 +11,14 @@ import { Margin } from '../../design-system/Layout/margins';
 import { Padding } from '../../design-system/Layout/padding';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
+import apiClient from '../../utils/api';
 
 // Country data from design system constants
 const countries = AUTH_COUNTRIES.map(c => ({ name: c.name, code: c.dial }));
 
 export default function ResetByPhone() {
   const copy = AUTH_COPY.resetByPhone as AuthScreenCopy;
+  const { fromAccountSettings } = useLocalSearchParams();
   const [selectedCountry, setSelectedCountry] = useState(countries[0]); // Default to Egypt
   const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState('');
@@ -45,16 +47,15 @@ export default function ResetByPhone() {
         phone_number: fullPhoneNumber,
       };
       
-      console.log('Requesting new Password:', requestData);
-      console.log('API URL:', `${BASE_URL}auth/request-reset-password/`);
-      
-      const response = await axios.post(`${BASE_URL}auth/request-reset-password/`, requestData);
-      
-      console.log('Request has been sent:', response.data);
+      if (fromAccountSettings === 'true') {
+        await apiClient.post('auth/request-reset-password/', requestData);
+      } else {
+        await axios.post(`${BASE_URL}auth/request-reset-password/`, requestData);
+      }
       // Navigate to OTP verification screen with user data
       router.push({
         pathname: '/(auth)/verify-otp', 
-        params: { phone_number: fullPhoneNumber, country: selectedCountry.name, flow: 'reset-password' }
+        params: { phone_number: fullPhoneNumber, country: selectedCountry.name, flow: 'reset-password', fromAccountSettings: fromAccountSettings === 'true' ? 'true' : 'false' }
       });
       
     } catch (error: any) {
@@ -75,7 +76,7 @@ export default function ResetByPhone() {
   return (
     <View style={{ flex: 1, backgroundColor: AUTH_THEME.background }}>
       {/* Header */}
-      <View style={{ paddingTop: Spacing.md, ...Padding.screenHorizontal }}>
+      <View style={{ paddingTop: Spacing.xxl, ...Padding.screenHorizontal }}>
         {/* Back Button */}
         <TouchableOpacity
           style={{
@@ -165,11 +166,12 @@ export default function ResetByPhone() {
             <View
               style={{
                 backgroundColor: colors.surface,
-                borderRadius: 12,
-                padding: Spacing.md,
+                borderRadius: 8,
                 borderWidth: 1,
                 borderColor: AUTH_THEME.border,
                 minWidth: 80,
+                paddingHorizontal: Spacing.sm,
+                paddingVertical: 10,
                 alignItems: 'center',
                 justifyContent: 'center',
               }}

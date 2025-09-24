@@ -10,12 +10,14 @@ import { Margin } from '../../design-system/Layout/margins';
 import { Padding } from '../../design-system/Layout/padding';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
+import apiClient from '../../utils/api';
 
 
 const newpassword = () => {
   const [new_password, setNewPassword] = useState('');
   const [confirm_password, setConfirmPassword] = useState('');
-  const { email, phone_number } = useLocalSearchParams();
+  const { email, phone_number, fromAccountSettings } = useLocalSearchParams();
+  
 
   const handleResetPassword = async () => {
     try {
@@ -28,12 +30,13 @@ const newpassword = () => {
         user_type: 'CUSTOMER', // Default to customer
       };
       
-      console.log('Sending reset password request:', requestData);
-      console.log('API URL:', axios.post(`${BASE_URL}auth/reset-password/`, requestData));
-      
-      const response = await axios.post(`${BASE_URL}auth/reset-password/`, requestData);
-      
-      console.log('Password Updated Successfully:', response.data);
+      if (fromAccountSettings === 'true') {
+        // Ensure CSRF is hydrated for session-protected flow
+        try { await apiClient.get('auth/csrf-token/'); } catch {}
+        await apiClient.post('auth/reset-password/', requestData);
+      } else {
+        await axios.post(`${BASE_URL}auth/reset-password/`, requestData);
+      }
       router.push({
         pathname: '/(auth)/Resetcomplete' as never,
         params: {  email: email || undefined, phone_number: phone_number || undefined}
@@ -57,7 +60,7 @@ const newpassword = () => {
   return (
     <View style={{ flex: 1, backgroundColor: AUTH_THEME.background }}>
       {/* Header (fixed) */}
-      <View style={{ paddingTop: Spacing.md, ...Padding.screenHorizontal }}>
+      <View style={{ paddingTop: Spacing.xxl, ...Padding.screenHorizontal }}>
         {/* Back Button */}
         <TouchableOpacity
           style={{

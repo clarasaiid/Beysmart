@@ -3,7 +3,7 @@ import Svg, { Path, SvgProps } from "react-native-svg";
 
 type LockProps = SvgProps & { width?: number; height?: number; color?: string }
 
-const Lock = ({ width = 24, height = 24, color = "#9CA3AF", ...props }: LockProps) => (
+const Lock = ({ width = 16, height = 16, color = "#9CA3AF", ...props }: LockProps) => (
   <Svg width={width} height={height} viewBox="0 0 16 16" fill="none" {...props}>
     <Path
       fill={color}

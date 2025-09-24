@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 import { BASE_URL } from '../../constants/api';
@@ -10,9 +10,11 @@ import { Margin } from '../../design-system/Layout/margins';
 import { Padding } from '../../design-system/Layout/padding';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
+import apiClient from '../../utils/api';
 
 const ResetByEmail = () => {
   const [email, setEmail] = useState('');
+  const { fromAccountSettings } = useLocalSearchParams();
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,26 +32,19 @@ const ResetByEmail = () => {
     setError('');
 
     try {
-        const requestData = {
-            email,
-          };
-          
-          console.log('Requesting new Password:', requestData);
-          console.log('API URL:', `${BASE_URL}auth/request-reset-password/`);
-          
-          const response = await axios.post(`${BASE_URL}auth/request-reset-password/`, requestData);
-          
-          console.log('Request has been sent:', response.data);
-          // Navigate to OTP verification screen with user data
-          router.push({
-            pathname: '/(auth)/verify-otp', 
-            params: {email: email, flow: 'reset-password'}
-          });
-  
-      
+      const requestData = { email };
+      if (fromAccountSettings === 'true') {
+        await apiClient.post('auth/request-reset-password/', requestData);
+      } else {
+        await axios.post(`${BASE_URL}auth/request-reset-password/`, requestData);
+      }
+      // Navigate to OTP verification screen with user data
+      router.push({
+        pathname: '/(auth)/verify-otp', 
+        params: { email: email, flow: 'reset-password', fromAccountSettings: fromAccountSettings === 'true' ? 'true' : 'false' }
+      });
       // For now, just show success
       Alert.alert('Success', 'Verification code sent to your email');
-      
     } catch (error: any) {
       console.error('Failed to send reset code:', error);
       setError(error.response?.data?.message || 'Failed to send code. Please try again.');
@@ -65,7 +60,7 @@ const ResetByEmail = () => {
   return (
     <View style={{ flex: 1, backgroundColor: AUTH_THEME.background }}>
       {/* Header */}
-      <View style={{ paddingTop: Spacing.md, ...Padding.screenHorizontal }}>
+      <View style={{ paddingTop: Spacing.xxl, ...Padding.screenHorizontal }}>
         {/* Back Button */}
         <TouchableOpacity
           style={{

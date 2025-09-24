@@ -16,6 +16,7 @@ interface TextFieldProps {
   helperText?: string;
   showEyeIcon?: boolean;
   leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
   disabled?: boolean;
   keyboardType?: 'default' | 'number-pad' | 'decimal-pad' | 'numeric' | 'email-address' | 'phone-pad';
   accessibilityLabel?: string;
@@ -33,6 +34,7 @@ const TextField: React.FC<TextFieldProps> = ({
   helperText,
   showEyeIcon = false,
   leftIcon,
+  rightIcon,
   disabled = false,
   keyboardType = 'default',
   accessibilityLabel,
@@ -93,6 +95,9 @@ const TextField: React.FC<TextFieldProps> = ({
             color: disabled ? colors.disabled : colors.text,
           }}
         />
+        {rightIcon && (
+          <View style={{ marginLeft: 8 }}>{rightIcon}</View>
+        )}
         {showEyeIcon && !disabled && (
           <TouchableOpacity onPress={toggleSecureEntry}>
             <Ionicons

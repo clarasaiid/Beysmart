@@ -22,26 +22,16 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
   const [hasNotification, setHasNotification] = useState(true); // This would come from backend
   const [selectedLabelOverride, setSelectedLabelOverride] = useState<string | null>(null);
 
-  // Debug logs at component start
-  console.log('TopNavigation - homes:', homes);
-  console.log('TopNavigation - hasHomes:', homes.length > 0);
-  console.log('TopNavigation - activeHomeId:', activeHomeId);
-  console.log('TopNavigation - isDropdownOpen:', isDropdownOpen);
-
   const activeHome = homes.find(home => home.id === activeHomeId);
   const hasHomes = homes.length > 0;
 
   const toggleDropdown = () => {
-    console.log('toggleDropdown called, hasHomes:', hasHomes);
-    console.log('Current isDropdownOpen:', isDropdownOpen);
     if (hasHomes) {
       setIsDropdownOpen(!isDropdownOpen);
-      console.log('Setting dropdown to:', !isDropdownOpen);
     }
   };
 
   const handleHomeSelect = (homeId: number) => {
-    console.log('Home selected:', homeId);
     onHomeSelect(homeId);
     setIsDropdownOpen(false);
     // Clear any temporary label (e.g., Add New Home) when a real home is chosen
@@ -70,7 +60,6 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
                 <TouchableOpacity
                   style={styles.homeSelector}
                   onPress={() => {
-                    console.log('Home selector pressed!');
                     toggleDropdown();
                   }}
                   activeOpacity={TOP_NAVIGATION.ANIMATION.ACTIVE_OPACITY}
@@ -99,7 +88,6 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
                             home.id === activeHomeId && styles.activeDropdownItem
                           ]}
                           onPress={() => {
-                            console.log('TouchableOpacity pressed for home:', home.id);
                             handleHomeSelect(home.id);
                           }}
                           activeOpacity={0.7}
@@ -116,7 +104,6 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
                       <TouchableOpacity
                         style={styles.addNewHomeItem}
                         onPress={() => {
-                          console.log('Add new home pressed!');
                           // Show 'Add New Home' as the current selection text
                           setSelectedLabelOverride(TOP_NAVIGATION.HOME_SELECTOR.ADD_NEW_HOME);
                           onAddHome();
@@ -144,7 +131,6 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
                 <TouchableOpacity 
                   style={styles.homeSelector} 
                   onPress={() => {
-                    console.log('Add home button pressed!');
                     onAddHome();
                   }}
                   accessibilityLabel={ACCESSIBILITY.LABELS.ADD_HOME}
@@ -170,7 +156,6 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
             <TouchableOpacity 
               style={styles.notificationButton} 
               onPress={() => {
-                console.log('Notification pressed!');
                 onNotificationPress?.();
               }}
               activeOpacity={TOP_NAVIGATION.ANIMATION.ACTIVE_OPACITY}
@@ -248,7 +233,6 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
               <TouchableOpacity 
                 style={styles.addMemberButton} 
                 onPress={() => {
-                  console.log('Add member pressed!');
                   onAddMember?.();
                 }}
                 accessibilityLabel={ACCESSIBILITY.LABELS.ADD_MEMBER}
@@ -409,6 +393,7 @@ const styles = {
     width: TOP_NAVIGATION.DIMENSIONS.USER_AVATAR.SIZE,
     height: TOP_NAVIGATION.DIMENSIONS.USER_AVATAR.SIZE,
     borderRadius: TOP_NAVIGATION.DIMENSIONS.USER_AVATAR.BORDER_RADIUS,
+    resizeMode: 'cover' as const,
   },
   addMemberButton: {
     width: TOP_NAVIGATION.DIMENSIONS.ADD_MEMBER.SIZE,

@@ -1,6 +1,10 @@
 // Home Screen Constants - All hardcoded values moved here for easy customization
 import { colors } from '../colors/colors';
 // Home Screen Setup Timeline Constants
+
+export const SUPPORT_EMAIL = "beysmart2025@hotmail.com";
+export const SUPPORT_SUBJECT = "Support";
+export const SUPPORT_BODY = "Hi Support Team,\n\nI need help with";
 export const HOME_SETUP = {
   // Step configurations
   STEPS: [
@@ -175,10 +179,10 @@ export const ADD_HOME = {
       KEY: 'homeType',
       OPTIONS: [
         { label: 'Apartment', value: 'apartment' },
-        { label: 'House', value: 'house' },
-        { label: 'Condo', value: 'condo' },
-        { label: 'Townhouse', value: 'townhouse' },
-        { label: 'Studio', value: 'studio' },
+        { label: 'Villa', value: 'villa' },
+        { label: 'Office', value: 'office' },
+        { label: 'Store', value: 'store' },
+        { label: 'Other', value: 'other' },
       ],
     },
     HOME_LOCATION: {
@@ -332,9 +336,9 @@ export const ADD_ROOM = {
       SUBTITLE: 'Used for energy usage estimates.',
       KEY: 'roomDimensions',
       OPTIONS: [
-        { label: 'Small (10 m²)', value: 'small' },
-        { label: 'Medium (18 m²)', value: 'medium' },
-        { label: 'Large (24 m²)', value: 'large' },
+        { label: 'Small (10 m²)', value: '10' },
+        { label: 'Medium (18 m²)', value: '18' },
+        { label: 'Large (24 m²)', value: '24' },
       ],
     },
   },

@@ -127,6 +127,7 @@ export const AUTH_COPY: Record<AuthScreenKey, AuthScreenCopy | VerifyCopyConfig>
   },
 };
 
+
 export const AUTH_FLAGS = {
   // If any screens need to toggle features, keep flags here
   showSecurityFooter: true,

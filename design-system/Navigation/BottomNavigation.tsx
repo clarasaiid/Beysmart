@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
 import { colors } from '../colors/colors';
 import { IconKey, renderIcon } from '../icons';
@@ -13,24 +13,30 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   profile_picture,
   onTabPress,
 }) => {
+  const [imageError, setImageError] = useState(false);
+
   const getIcon = (key: string, isActive: boolean) => {
     const iconColor = colors.navBarBackground;
     
     // Handle profile icon specially for profile pictures
-    if (key === 'profile' && profile_picture) {
+    if (key === 'profile' && profile_picture && !imageError) {
       return (
         <Image 
           source={{ uri: profile_picture }} 
           style={{ 
-            width: BOTTOM_NAVIGATION.DIMENSIONS.ICON_SIZE, 
-            height: BOTTOM_NAVIGATION.DIMENSIONS.ICON_SIZE, 
-            borderRadius: BOTTOM_NAVIGATION.DIMENSIONS.ICON_SIZE / 2 
+            width: BOTTOM_NAVIGATION.DIMENSIONS.ICON_CONTAINER.SIZE, 
+            height: BOTTOM_NAVIGATION.DIMENSIONS.ICON_CONTAINER.SIZE, 
+            borderRadius: BOTTOM_NAVIGATION.DIMENSIONS.ICON_CONTAINER.BORDER_RADIUS,
+            resizeMode: 'cover' as const
+          }}
+          onError={() => {
+            setImageError(true)
           }}
         />
       );
     }
     
-    // Use dynamic icon rendering for other icons
+    // Use dynamic icon rendering for all icons (including profile when no picture)
     if (isValidIconKey(key)) {
       return renderIcon({ 
         key, 
@@ -57,11 +63,11 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
     paddingTop: BOTTOM_NAVIGATION.SPACING.ICON_CONTAINER.TOP,
   });
 
-  const getIconContainerStyle = (isActive: boolean) => ({
+  const getIconContainerStyle = (isActive: boolean, isProfile: boolean = false, hasProfilePicture: boolean = false) => ({
     width: BOTTOM_NAVIGATION.DIMENSIONS.ICON_CONTAINER.SIZE,
     height: BOTTOM_NAVIGATION.DIMENSIONS.ICON_CONTAINER.SIZE,
     borderRadius: BOTTOM_NAVIGATION.DIMENSIONS.ICON_CONTAINER.BORDER_RADIUS,
-    backgroundColor: isActive ? colors.primary.base : colors.surface,
+    backgroundColor: (isProfile && hasProfilePicture) ? 'transparent' : (isActive ? colors.primary.base : colors.surface),
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
     marginBottom: BOTTOM_NAVIGATION.SPACING.ICON_CONTAINER.BOTTOM,
@@ -93,7 +99,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             accessibilityLabel={`${ACCESSIBILITY.LABELS.TAB_ITEM} ${item.label}`}
             accessibilityHint={ACCESSIBILITY.HINTS.TAB_ITEM}
           >
-            <View style={getIconContainerStyle(isActive)}>
+            <View style={getIconContainerStyle(isActive, item.key === 'profile', !!(profile_picture && !imageError))}>
               {getIcon(item.key, isActive)}
             </View>
             <Typography 

@@ -1,30 +1,30 @@
-import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, ScrollView, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, ScrollView, TouchableOpacity, View } from 'react-native';
 
 // Design System Imports
 import { AppButton } from '@/design-system/Buttons/Buttons';
 import { colors } from '@/design-system/colors/colors';
 import { ADD_ROOM, ROOM_ACCESSIBILITY } from '@/design-system/home/Constants';
 import {
-    BackArrow,
-    ImageIcon,
-    PlusIcon
+  BackArrow,
+  ImageIcon,
+  PlusIcon
 } from '@/design-system/icons';
 import {
-    Bag,
-    BathIcon,
-    BedroomIcon,
-    Car,
-    Gym,
-    Hallway,
-    KitchenIcon,
-    LivingIcon,
-    pots,
-    Screen,
-    Shirt,
+  Bag,
+  BathIcon,
+  BedroomIcon,
+  Car,
+  Gym,
+  Hallway,
+  KitchenIcon,
+  LivingIcon,
+  pots,
+  Screen,
+  Shirt,
 } from '@/design-system/icons/filled';
 import DropdownIcon from '@/design-system/icons/outlined/Dropdown';
 import { Dropdown, TextField } from '@/design-system/inputs';
@@ -32,6 +32,7 @@ import { Spacing } from '@/design-system/Layout/spacing';
 import { BottomNavigation } from '@/design-system/Navigation/BottomNavigation';
 import { Typography } from '@/design-system/typography/typography';
 import { BASE_URL } from '../../constants/api';
+import apiClient from '../../utils/api';
 
 // Types
 interface FormData {
@@ -90,11 +91,31 @@ const AddRoom: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [homes, setHomes] = useState<Home[]>([]);
   const [isAdvancedExpanded, setIsAdvancedExpanded] = useState(false);
-  const FRONTEND_ONLY = true;
+  const [user, setUser] = useState<any>(null);
+  const FRONTEND_ONLY = false; // Enable backend API calls
 
   // Load homes on component mount
   useEffect(() => {
     loadHomes();
+  }, []);
+
+  // Load user data for profile picture
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const userDataString = await AsyncStorage.getItem('userData');
+        if (userDataString) {
+          const userData = JSON.parse(userDataString);
+          setUser({
+            first_name: userData.first_name || undefined,
+            profile_picture: userData.profile_picture ? `${BASE_URL.replace('/api/', '')}${userData.profile_picture}` : undefined
+          });
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
+    };
+    loadUserData();
   }, []);
 
   const loadHomes = async () => {
@@ -108,7 +129,7 @@ const AddRoom: React.FC = () => {
         return;
       }
 
-      const response = await axios.get(`${BASE_URL}home/homes/`);
+      const response = await apiClient.get('home/homes/');
       setHomes(response.data);
     } catch (error) {
       console.error('Error loading homes:', error);
@@ -221,12 +242,12 @@ const AddRoom: React.FC = () => {
         return;
       }
 
-      const response = await axios.post(`${BASE_URL}room/rooms/`, {
+      const response = await apiClient.post('home/rooms/', {
         name: formData.roomName.trim(),
-        home_id: formData.addedTo,
+        home: formData.addedTo, // Changed from home_id to home to match backend serializer
         room_type: formData.roomType,
-        floor: formData.floor,
-        dimensions: formData.roomDimensions,
+        floor: parseInt(formData.floor), // Convert to integer
+        dimension_m2: formData.roomDimensions, // Changed from 'dimensions' to 'dimension_m2'
         photo: formData.roomPhoto,
       });
 
@@ -491,12 +512,41 @@ const AddRoom: React.FC = () => {
           <View style={styles.buttonContainer}>
             <AppButton
               variant="primaryLarge"
-              title={ADD_ROOM.NAVIGATION.CREATE_BUTTON}
+              title={isLoading ? 'Creating Room...' : ADD_ROOM.NAVIGATION.CREATE_BUTTON}
+              icon={isLoading ? (
+                <ActivityIndicator 
+                  size="small" 
+                  color={colors.primary.lighter} 
+                  style={{ marginRight: Spacing.xs }}
+                />
+              ) : undefined}
               onPress={handleSubmit}
               disabled={isLoading}
               accessibilityLabel={ROOM_ACCESSIBILITY.LABELS.CREATE_BUTTON}
               accessibilityHint={ROOM_ACCESSIBILITY.HINTS.CREATE_BUTTON}
             />
+
+            {/* Loading Message */}
+            {isLoading && (
+              <View style={{ 
+                flexDirection: 'row', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                marginTop: Spacing.md 
+              }}>
+                <ActivityIndicator 
+                  size="small" 
+                  color={colors.primary.darker} 
+                  style={{ marginRight: Spacing.xs }}
+                />
+                <Typography 
+                  variant="caption" 
+                  color={colors.primary.darker}
+                >
+                  Setting up your room and connecting to ThingsBoard...
+                </Typography>
+              </View>
+            )}
           </View>
         </View>
       </ScrollView>
@@ -510,15 +560,16 @@ const AddRoom: React.FC = () => {
           { key: 'profile', label: 'Profile', icon: null },
         ]}
         activeKey="home"
+        profile_picture={user?.profile_picture}
         onTabPress={(key) => {
           if (key === 'home') {
-            router.push('/' as any);
+            router.push('/(app)/home');
           } else if (key === 'devices') {
-            router.push('/' as any);
+            router.push('/(app)/home');
           } else if (key === 'energy') {
-            router.push('/' as any);
+            router.push('/(app)/home');
           } else if (key === 'profile') {
-            router.push('/' as any);
+            router.push('/(profile actions)/Profile' as any);
           }
         }}
       />
