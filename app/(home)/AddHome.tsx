@@ -1,8 +1,7 @@
-import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
-
 // Design System Imports
 import { AppButton } from '@/design-system/Buttons/Buttons';
 import { colors } from '@/design-system/colors/colors';
@@ -13,6 +12,7 @@ import { Spacing } from '@/design-system/Layout/spacing';
 import { BottomNavigation } from '@/design-system/Navigation/BottomNavigation';
 import { Typography } from '@/design-system/typography/typography';
 import { BASE_URL } from '../../constants/api';
+import apiClient from '../../utils/api';
 
 // Types
 interface FormData {
@@ -37,7 +37,27 @@ const AddHome: React.FC = () => {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
-  const FRONTEND_ONLY = true;
+  const [user, setUser] = useState<any>(null);
+  const FRONTEND_ONLY = false; // Enable backend API calls
+
+  // Load user data for profile picture
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const userDataString = await AsyncStorage.getItem('userData');
+        if (userDataString) {
+          const userData = JSON.parse(userDataString);
+          setUser({
+            first_name: userData.first_name || undefined,
+            profile_picture: userData.profile_picture ? `${BASE_URL.replace('/api/', '')}${userData.profile_picture}` : undefined
+          });
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
+    };
+    loadUserData();
+  }, []);
 
   // Form validation
   const validateForm = (): boolean => {
@@ -96,22 +116,36 @@ const AddHome: React.FC = () => {
         return;
       }
 
-      const response = await axios.post(`${BASE_URL}home/homes/`, {
+      const response = await apiClient.post('home/homes/', {
         name: formData.homeName.trim(),
-        type: formData.homeType,
+        home_type: formData.homeType,
         location: formData.homeLocation.trim(),
       });
 
       // Navigate to next step on any successful 2xx response
       if (response.status >= 200 && response.status < 300) {
-        router.push('/(home)/AddHomePhoto' as never);
+        router.push({
+          pathname: '/(home)/AddHomePhoto' as never,
+          params: {
+            homeId: response.data.id.toString(),
+            homeName: formData.homeName.trim(),
+            homeType: formData.homeType,
+            homeLocation: formData.homeLocation.trim(),
+          }
+        } as never);
         return;
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating home:', error);
+      
+      const errorMessage = error.response?.data?.error || 
+                          error.response?.data?.detail || 
+                          error.message || 
+                          'Failed to create home. Please try again.';
+      
       Alert.alert(
         'Error',
-        'Failed to create home. Please try again.',
+        errorMessage,
         [{ text: 'OK' }]
       );
     } finally {
@@ -214,16 +248,17 @@ const AddHome: React.FC = () => {
           { key: 'profile', label: 'Profile', icon: null },
         ]}
         activeKey="home"
+        profile_picture={user?.profile_picture}
         onTabPress={(key) => {
           // Handle navigation based on key
           if (key === 'home') {
-            router.push('/' as any);
+            router.push('/(app)/home');
           } else if (key === 'devices') {
-            router.push('/' as any);
+            router.push('/(app)/home');
           } else if (key === 'energy') {
-            router.push('/' as any);
+            router.push('/(app)/home');
           } else if (key === 'profile') {
-            router.push('/' as any);
+            router.push('/(profile actions)/Profile' as any);
           }
         }}
       />

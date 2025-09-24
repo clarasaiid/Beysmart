@@ -11,11 +11,12 @@ import { ImageIcon } from '../../design-system/icons';
 import { Padding } from '../../design-system/Layout/padding';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
+import apiClient from '../../utils/api';
 
 const ProfilePhoto = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const { email, phone_number } = useLocalSearchParams();
+  const { email, phone_number, fromAccountSettings } = useLocalSearchParams();
 
   const pickImage = async () => {
     try {
@@ -85,30 +86,41 @@ const ProfilePhoto = () => {
         name: `profile_picture.${fileExtension}`,
       } as any);
       
-      // Append other user data
-      formData.append('email', email as string);
-      formData.append('phoneNumber', phone_number as string);
+      // Append other user data if available (for registration flow)
+      if (email) formData.append('email', email as string);
+      if (phone_number) formData.append('phone_number', phone_number as string);
 
-      // Make the API call
-      const response = await axios.patch(`${BASE_URL}auth/update-profile-picture/`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        params:{
-            email: email,
-            phoneNumber: phone_number,
-        }
-      });
+      // Make the API call - use different approach based on flow
+      let response;
+      if (fromAccountSettings === 'true') {
+        // From AccountSettings - use authenticated apiClient
+        response = await apiClient.patch('auth/update-profile-picture/', formData);
+      } else {
+        // Registration flow - use axios with AllowAny permission
+        response = await axios.patch(`${BASE_URL}auth/update-profile-picture/`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          params:{
+              email: email,
+              phoneNumber: phone_number,
+          }
+        });
+      }
 
-      console.log('Profile photo uploaded successfully:', response.data);
       
-      // Navigate to the next screen (you can adjust this based on your flow)
+      // Navigate based on the flow
       Alert.alert('Success', 'Profile photo uploaded successfully!', [
         {
           text: 'Continue',
           onPress: () => {
-            // Navigate to home or next screen
-            router.push('/(app)/home' as never);
+            if (fromAccountSettings === 'true') {
+              // From AccountSettings - go back to AccountSettings
+              router.back();
+            } else {
+              // Registration flow - go to login page
+              router.push('/(auth)/loginpage' as never);
+            }
           }
         }
       ]);
@@ -134,8 +146,8 @@ const ProfilePhoto = () => {
         {
           text: 'Skip',
           onPress: () => {
-            // Navigate to home or next screen
-            router.push('/(app)/home' as never);
+            // Navigate to login page
+            router.push('/(auth)/loginpage' as never);
           },
         },
       ]
@@ -150,7 +162,7 @@ const ProfilePhoto = () => {
   return (
     <View style={{ flex: 1, backgroundColor: AUTH_THEME.background }}>
       {/* Header (fixed) */}
-      <View style={{ paddingTop: Spacing.md, ...Padding.screenHorizontal }}>
+      <View style={{ paddingTop: Spacing.xxl, ...Padding.screenHorizontal }}>
         {/* Back Button */}
         <TouchableOpacity
           style={{
@@ -256,7 +268,7 @@ const ProfilePhoto = () => {
             marginTop: Spacing.lg,
             paddingVertical: Spacing.sm,
           }}
-          onPress={() => router.push('/(app)/home' as never)}
+          onPress={() => router.push('/(auth)/loginpage' as never)}
         >
           <Typography variant="body" color={colors.secondary.base}>
             Skip This Step

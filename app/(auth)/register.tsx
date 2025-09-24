@@ -15,6 +15,8 @@ import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
 
  export default function Register()  {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const countries = AUTH_COUNTRIES;
@@ -22,9 +24,9 @@ import { Typography } from '../../design-system/typography/typography';
   const [countryPickerVisible, setCountryPickerVisible] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  // Email validation function
+  // Email validation function - requires .com domain
   const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
     return emailRegex.test(email);
   };
 
@@ -32,7 +34,7 @@ import { Typography } from '../../design-system/typography/typography';
   const handleEmailChange = (text: string) => {
     setEmail(text);
     if (text.length > 0 && !validateEmail(text)) {
-      setEmailError('Please enter a valid email address (e.g., user@example.com)');
+      setEmailError('Please enter a valid email address(e.g., user@example.com)');
     } else {
       setEmailError('');
     }
@@ -41,16 +43,13 @@ import { Typography } from '../../design-system/typography/typography';
   const handleRegister = async () => {
     try {
       const requestData = {
+        first_name: firstName,
+        last_name: lastName,
         email,
         phone_number: phoneNumber,
         country: selectedCountry.name,
       };
       
-      console.log('=== REGISTRATION DEBUG START ===');
-      console.log('Sending registration request:', requestData);
-      console.log('API URL:', `${BASE_URL}auth/register/`);
-      
-      // Add timeout to catch hanging requests
       const response = await axios.post(`${BASE_URL}auth/register/`, requestData, {
         timeout: 15000, // 15 seconds timeout
         headers: {
@@ -58,32 +57,23 @@ import { Typography } from '../../design-system/typography/typography';
         }
       });
       
-      console.log('=== API RESPONSE ===');
-      console.log('Response status:', response.status);
-      console.log('Response data:', response.data);
-      
       router.push({
         pathname: '/(auth)/verify-otp', 
-        params: {email: email, phone_number: phoneNumber, flow: 'register'}
+        params: {
+          email: email, 
+          phone_number: phoneNumber, 
+          first_name: firstName,
+          last_name: lastName,
+          flow: 'register'
+        }
       });
       
-      console.log('=== NAVIGATION COMPLETED ===');
-      
     }  catch (error: any) {
-      console.log('=== ERROR CAUGHT ===');
-      console.error('Full error object:', error);
-      console.error('Error code:', error.code);
-      console.error('Error message:', error.message);
-      console.error('Error response status:', error.response?.status);
-      console.error('Error response data:', error.response?.data);
-      console.error('Error response headers:', error.response?.headers);
-      console.error('Error config:', error.config);
-      
       const errorMessage = error.response?.data?.message || error.message || 'Registration failed. Please try again.';
       Alert.alert('Registration Failed', errorMessage);
     }
   }
-  const isDisabled = !email || !phoneNumber || emailError !== '';
+  const isDisabled = !firstName || !lastName || !email || !phoneNumber || emailError !== '';
 
   const copy = AUTH_COPY.register as AuthScreenCopy;
 
@@ -92,7 +82,7 @@ import { Typography } from '../../design-system/typography/typography';
   return (
     <View style={{ flex: 1, backgroundColor: AUTH_THEME.background }}>
       {/* Header (fixed) */}
-      <View style={{ paddingTop: Spacing.xs, ...Padding.screenHorizontal }}>
+      <View style={{ paddingTop: Spacing.xxl, ...Padding.screenHorizontal }}>
         {/* Back Button */}
         <TouchableOpacity
           style={{
@@ -146,6 +136,28 @@ import { Typography } from '../../design-system/typography/typography';
         }}
       >
         {/* Form Fields */}
+        {/* First Name and Last Name - Side by Side */}
+        <View style={{ ...Margin.betweenComponents }}>
+          <View style={{ flexDirection: 'row', gap: Spacing.sm }}>
+            <View style={{ flex: 1 }}>
+              <TextField
+                label="First Name"
+                value={firstName}
+                onChangeText={setFirstName}
+                placeholder="Your first name"
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <TextField
+                label="Last Name"
+                value={lastName}
+                onChangeText={setLastName}
+                placeholder="Your last name"
+              />
+            </View>
+          </View>
+        </View>
+
         <View style={{ ...Margin.betweenComponents }}>
           <TextField
             label={copy.fields?.emailLabel || 'Email Address'}

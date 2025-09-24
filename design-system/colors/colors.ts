@@ -32,6 +32,7 @@
     surface: '#FFFFFF',
 
     success: '#10B981',
+    successLight: '#D1FAE5',
     error: '#EF4444',
     warning: '#F59E0B',
     info: '#3B82F6',
@@ -42,5 +43,10 @@
     activestep:'#484848',
     inactivestep:'#E5E7EB',
     roomtypeSelected:'#007AFF',
+    AddhomeCardBackground: '#F3F4F6',
+    iconBackground: '#F3F4F6',
+    orange:'#F97316',
+    lightPink: '#FCE7F3', // Light pink for critical button background
+    
   };
   

@@ -9,8 +9,7 @@ import { BackArrow, ImageIcon, LockIcon, UserIcon } from '../../design-system/ic
 import { Padding } from '../../design-system/Layout/padding';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
-import {BASE_URL} from '../../constants/api';
-import axios from 'axios';
+import apiClient from '../../utils/api';
 
 interface HomeData {
   homeName?: string;
@@ -24,6 +23,7 @@ const AddHomePhoto = () => {
   const [isUploading, setIsUploading] = useState(false);
 
   // Get home data from previous screen
+  const homeId = params.homeId as string;
   const homeData: HomeData = {
     homeName: (params.homeName as string) || 'Main Home',
     homeType: (params.homeType as string) || 'Apartment',
@@ -72,6 +72,11 @@ const AddHomePhoto = () => {
       return;
     }
 
+    if (!homeId) {
+      Alert.alert('Error', 'Home ID not found. Please try creating the home again.');
+      return;
+    }
+
     setIsUploading(true);
     try {
       // Create FormData for the image upload
@@ -93,16 +98,14 @@ const AddHomePhoto = () => {
       const mimeType = mimeTypeMap[fileExtension] || 'image/jpeg';
       
       // Append the image file
-      formData.append('home_picture', {
+      formData.append('photo', {
         uri: selectedImage,
         type: mimeType,
         name: `home_photo.${fileExtension}`,
       } as any);
    
-      console.log('Home photo uploaded successfully:');
-      axios.patch(`${BASE_URL}home/homes/{id}/`, {
-        home_picture: selectedImage,
-      });
+      const response = await apiClient.patch(`home/homes/${homeId}/upload_photo/`, formData);
+      
       // Navigate to the next screen (you can adjust this based on your flow)
       Alert.alert('Success', 'Home photo uploaded successfully!', [
         {

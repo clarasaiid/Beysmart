@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { AUTH_COPY, AUTH_THEME, AUTH_VISUALS, type AuthScreenCopy } from '../../design-system/auth/constants';
@@ -8,14 +8,22 @@ import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
 
 const ResetPassword = () => {
+  const { fromAccountSettings } = useLocalSearchParams();
+
   const handleEmailReset = () => {
     // Will redirect to resetbyemail screen (to be created later)
-    router.push('/(auth)/resetbyemail' as never);
+    router.push({
+      pathname: '/(auth)/resetbyemail',
+      params: { fromAccountSettings: fromAccountSettings === 'true' ? 'true' : 'false' }
+    } as never);
   };
 
   const handlePhoneReset = () => {
     // Will redirect to resetbyphone screen (to be created later)
-    router.push('/(auth)/resetbyphone' as never);
+    router.push({
+      pathname: '/(auth)/resetbyphone',
+      params: { fromAccountSettings: fromAccountSettings === 'true' ? 'true' : 'false' }
+    } as never);
   };
 
   const handleBack = () => {
@@ -28,7 +36,7 @@ const ResetPassword = () => {
   return (
     <View style={{ flex: 1, backgroundColor: AUTH_THEME.background }}>
       {/* Header */}
-      <View style={{ paddingTop: Spacing.md, ...Padding.screenHorizontal }}>
+      <View style={{ paddingTop: Spacing.xxl, ...Padding.screenHorizontal }}>
         {/* Back Button */}
         <TouchableOpacity
           style={{

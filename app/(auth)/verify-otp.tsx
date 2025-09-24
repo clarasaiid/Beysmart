@@ -1,4 +1,5 @@
 import { Padding } from '@/design-system/Layout/padding';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -8,11 +9,24 @@ import { AUTH_COPY, AUTH_TEXT, AUTH_THEME, AUTH_VISUALS } from '../../design-sys
 import { AppButton } from '../../design-system/Buttons/Buttons';
 import { OTPInputField } from '../../design-system/inputs';
 import { Spacing } from '../../design-system/Layout/spacing';
+import { AccountSettingsConstants as ACC } from '../../design-system/Profile actions/Constants';
 import { Typography } from '../../design-system/typography/typography';
+import apiClient from '../../utils/api';
 
 const VerifyOTPScreen = () => {
-  const { email, phone_number, flow } = useLocalSearchParams();
-  const copy = AUTH_COPY.verifyOtp as any;
+  const { email, phone_number, first_name, last_name, flow, fromAccountSettings } = useLocalSearchParams();
+  
+  // Use delete account constants if flow is delete-account, otherwise use default verify OTP constants
+  const copy = flow === 'delete-account' 
+    ? {
+        title: ACC.DELETE_ACCOUNT.VERIFY_TITLE,
+        subtitleEmail: ACC.DELETE_ACCOUNT.VERIFY_SUBTITLE_EMAIL,
+        subtitlePhone: ACC.DELETE_ACCOUNT.VERIFY_SUBTITLE_PHONE,
+        resendPrefix: 'Resend code in',
+        continueTitle: ACC.DELETE_ACCOUNT.VERIFY_BUTTON_TITLE,
+      }
+    : AUTH_COPY.verifyOtp as any;
+  
   const visuals = AUTH_VISUALS.verifyOtp;
   const [otp, setOtp] = useState(['', '', '', '']);
   const [timer, setTimer] = useState(59);
@@ -20,33 +34,102 @@ const VerifyOTPScreen = () => {
   
   const handleVerifyOTP = async () => {
     try {
-      const requestData = {
-        otp: otp.join(''),
-        email: email || undefined,
-        phone_number: phone_number || undefined,
-      };
-  
-      console.log('Sending verify OTP request:', requestData);
-      console.log('API URL:', `${BASE_URL}auth/verify-otp/`);
-  
-      const response = await axios.post(`${BASE_URL}auth/verify-otp/`, requestData);
-      if(flow === 'register'){
-        router.push({
-          pathname: '/(auth)/Complete-Registeration',
-          params: { email: email, phone_number: phone_number }
-        });
+      // Handle delete account flow separately (requires authentication)
+      if(flow === 'delete-account'){
+        // Handle delete account flow - call authenticated verify-otp API
+        try {
+          // Ensure CSRF is hydrated for session-protected flow
+          try { await apiClient.get('auth/csrf-token/'); } catch {}
+          
+          // Call the authenticated verify OTP API for delete account
+          const otpRequestData = {
+            otp: otp.join(''),
+            email: email || undefined,
+            phone_number: phone_number || undefined,
+          };
+          
+          await apiClient.post('auth/verify-otp-auth/', otpRequestData);
+          
+          // Clear all user data from AsyncStorage
+          await AsyncStorage.multiRemove([
+            'isAuthenticated',
+            'userData', 
+            'loginMethod',
+            'csrftoken',
+            'twoFactorEnabled'
+          ]);
+          
+          // Show success message
+          Alert.alert(
+            'Account Deletion Requested', 
+            'Your account deletion has been requested. Your account will be soft deleted for 60 days and then permanently deleted. You have been logged out.',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  // Navigate to welcome page and reset navigation stack
+                  router.replace('/');
+                }
+              }
+            ]
+          );
+        } catch (deleteError: any) {
+          console.error('Account deletion request failed:', deleteError);
+          const errorMessage = deleteError.response?.data?.message || deleteError.message || 'Account deletion request failed. Please try again.';
+          Alert.alert('Deletion Request Failed', errorMessage);
+        }
       }
-      else if(flow === 'reset-password'){
-        router.push({
-          pathname: '/(auth)/newpassword',
-          params: { email: email, phone_number: phone_number }
-        });
+      else {
+        // Handle all other flows (register, reset-password, login) - no authentication required
+        const requestData = {
+          otp: otp.join(''),
+          email: email || undefined,
+          phone_number: phone_number || undefined,
+        };
+
+        const response = fromAccountSettings === 'true'
+          ? await apiClient.post('auth/verify-otp/', requestData)
+          : await axios.post(`${BASE_URL}auth/verify-otp/`, requestData);
+          
+        if(flow === 'register'){
+          router.push({
+            pathname: '/(auth)/Complete-Registeration',
+            params: { 
+              email: email, 
+              phone_number: phone_number,
+              first_name: first_name,
+              last_name: last_name
+            }
+          });
+        }
+        else if(flow === 'reset-password'){
+          router.push({
+            pathname: '/(auth)/newpassword',
+            params: { email: email, phone_number: phone_number, fromAccountSettings: fromAccountSettings === 'true' ? 'true' : 'false' }
+          });
+        }
+        else if(flow === 'login'){
+          // The user is already logged in by your verify_otp_view backend
+          // Just store the user data and navigate to home
+          if(response.data.user) {
+            // Store user data in AsyncStorage
+            await AsyncStorage.setItem('isAuthenticated', 'true');
+            await AsyncStorage.setItem('userData', JSON.stringify(response.data.user));
+            await AsyncStorage.setItem('loginMethod', 'phone');
+            
+            // Store CSRF token if provided
+            if(response.data.csrf_token) {
+              await AsyncStorage.setItem('csrftoken', response.data.csrf_token);
+            }
+          }
+          
+          // Navigate to home/main app screen
+          router.replace('/(app)/home'); // or whatever your main screen route is
+        }
+        
+        // Show success message for non-delete flows
+        Alert.alert('Success', response.data.message);
       }
-  
-      console.log('OTP verification successful:', response.data);
-  
-      // ✅ Just check success by message (backend never sends OTP back)
-      Alert.alert('Success', response.data.message);
       
   
     } catch (error: any) {
@@ -86,7 +169,7 @@ const VerifyOTPScreen = () => {
   return (
     <View style={{ flex: 1, backgroundColor: AUTH_THEME.background }}>
     {/* Header (fixed) */}
-    <View style={{ paddingTop: Spacing.md, ...Padding.screenHorizontal }}>
+    <View style={{ paddingTop: Spacing.xxl, ...Padding.screenHorizontal }}>
       {/* Back Button */}
       <TouchableOpacity
         style={{
@@ -165,7 +248,6 @@ const VerifyOTPScreen = () => {
             autoFocus={true}
             onComplete={(value: string) => {
               // OTP is complete, you can handle this here
-              console.log('OTP Complete:', value);
             }}
           />
         </View>

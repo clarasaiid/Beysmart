@@ -20,6 +20,8 @@ export { default as FilledStarIcon } from '../icons/filled/StarIcon'
 export { default as FilledStatsIcon } from '../icons/filled/StatsIcon'
 export { default as FilledTimeIcon } from '../icons/filled/TimeIcon'
 export { default as FilledUserIcon } from '../icons/filled/UserIcon'
+export { default as FilledBackIcon } from '../icons/filled/BackIcon'
+export { default as FilledPhoneIcon } from '../icons/filled/PhoneIcon'
 
 
 
@@ -43,4 +45,7 @@ export { default as StarIcon } from '../icons/outlined/StarIcon'
 export { default as TimeIcon } from '../icons/outlined/TimeIcon'
 export { default as UserIcon } from '../icons/outlined/UserIcon'
 export { default as WhatsappIcon } from '../icons/outlined/Whatsapp'
+export {default as MobileIcon} from '../icons/outlined/MobileIcon'
+export {default as OtpIcon} from '../icons/outlined/OtpIcon'
+export {default as MailIcon} from '../icons/outlined/MailIcon'
 
