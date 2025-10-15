@@ -47,6 +47,6 @@
     iconBackground: '#F3F4F6',
     orange:'#F97316',
     lightPink: '#FCE7F3', // Light pink for critical button background
-    
+    lockbackground:'#6B7280',
   };
   

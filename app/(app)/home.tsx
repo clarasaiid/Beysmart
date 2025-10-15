@@ -202,20 +202,79 @@ const HomeScreen: React.FC = () => {
   const [isLoadingRooms, setIsLoadingRooms] = useState(true)
   const [showProfile, setShowProfile] = useState(false)
 
+  // Function to update setup steps based on current home's state
+  const updateStepsForCurrentHome = useCallback((homeId: number | undefined, rooms: any[]) => {
+    // Reset all steps first
+    let newSteps = resetSetupSteps()
+    
+    if (!homeId) {
+      // No home selected - all steps locked except add_home
+      setSteps(newSteps)
+      return
+    }
+
+    // Step 1: Add your home - always completed if we have homes
+    if (homes.length > 0) {
+      newSteps = completeSetupStep(newSteps, 'add_home')
+    }
+
+    // Step 2: Add your first room - completed if current home has rooms
+    if (rooms.length > 0) {
+      newSteps = completeSetupStep(newSteps, 'add_room')
+    }
+
+    // Step 3: Connect your device - only available if room exists
+    // This step will be unlocked automatically by the step logic
+
+    setSteps(newSteps)
+  }, [homes])
+
   // Load user data from AsyncStorage
   const loadUserData = useCallback(async () => {
     try {
       const userDataString = await AsyncStorage.getItem('userData')
-      
+      let needsProfileFetch = true
+
       if (userDataString) {
         const userData = JSON.parse(userDataString)
         setUser({
-          first_name: userData.first_name || undefined, // Will be undefined if no name set
+          first_name: userData.first_name || undefined,
           profile_picture: userData.profile_picture ? `${BASE_URL.replace('/api/', '')}${userData.profile_picture}` : undefined
         })
-        // Set email if available
         if (userData.email) {
           setUserEmail(userData.email)
+        }
+        // If we already have a first_name cached, skip fetching
+        if (userData.first_name && String(userData.first_name).trim().length > 0) {
+          needsProfileFetch = false
+        }
+      }
+
+      // Fallback: fetch fresh profile to get first_name if missing
+      if (needsProfileFetch) {
+        try {
+          const res = await apiClient.get('auth/profile/')
+          const data = res.data
+          setUser({
+            first_name: data.first_name || undefined,
+            profile_picture: data.profile_picture ? `${BASE_URL.replace('/api/', '')}${data.profile_picture}` : undefined
+          })
+          if (data.email) {
+            setUserEmail(data.email)
+          }
+          // Update cached userData with latest profile
+          const existingStr = await AsyncStorage.getItem('userData')
+          const existing = existingStr ? JSON.parse(existingStr) : {}
+          const merged = {
+            ...existing,
+            first_name: data.first_name ?? existing.first_name,
+            last_name: data.last_name ?? existing.last_name,
+            profile_picture: data.profile_picture ?? existing.profile_picture,
+            email: data.email ?? existing.email,
+          }
+          await AsyncStorage.setItem('userData', JSON.stringify(merged))
+        } catch (e) {
+          // Silent fail; header will just show default Welcome
         }
       }
     } catch (error) {
@@ -268,27 +327,43 @@ const HomeScreen: React.FC = () => {
     loadHomes()
   }, [])
 
-  // Load rooms from API
+  // Load rooms from API based on active home
   useEffect(() => {
     const loadRooms = async () => {
+      if (!activeHomeId) {
+        setRooms([])
+        setIsLoadingRooms(false)
+        updateStepsForCurrentHome(undefined, [])
+        return
+      }
+
       try {
-        const response = await apiClient.get('home/rooms/')
-        setRooms(response.data)
+        setIsLoadingRooms(true)
         
-        // If user has rooms, mark the "Add your first room" step as completed
-        if (response.data.length > 0) {
-          setSteps(prevSteps => completeSetupStep(prevSteps, 'add_room'))
-        }
+        // Load all rooms and filter by home ID
+        const response = await apiClient.get('home/rooms/')
+        
+        // Filter rooms by the active home ID
+        const filteredRooms = response.data.filter((room: any) => {
+          return room.home === activeHomeId || room.home === String(activeHomeId) || String(room.home) === String(activeHomeId)
+        })
+        
+        setRooms(filteredRooms)
+        
+        // Update setup steps based on current home's state
+        updateStepsForCurrentHome(activeHomeId, filteredRooms)
+        
       } catch (error: any) {
         console.error('Error loading rooms:', error);
         setRooms([])
+        updateStepsForCurrentHome(activeHomeId, [])
       } finally {
         setIsLoadingRooms(false)
       }
     }
 
     loadRooms()
-  }, [])
+  }, [activeHomeId, updateStepsForCurrentHome])
 
   // Handle step completion from navigation params
   useEffect(() => {
@@ -299,9 +374,24 @@ const HomeScreen: React.FC = () => {
     
     // Handle add_room completion
     if (params.add_room === 'true') {
-      setSteps(prevSteps => completeSetupStep(prevSteps, 'add_room'))
+      // Reload rooms and update steps for current home
+      const reloadRooms = async () => {
+        if (activeHomeId) {
+          try {
+            const response = await apiClient.get('home/rooms/')
+            const filteredRooms = response.data.filter((room: any) => 
+              room.home === activeHomeId || room.home === String(activeHomeId) || String(room.home) === String(activeHomeId)
+            )
+            setRooms(filteredRooms)
+            updateStepsForCurrentHome(activeHomeId, filteredRooms)
+          } catch (error) {
+            console.error('Error reloading rooms:', error)
+          }
+        }
+      }
+      reloadRooms()
     }
-  }, [params.completedStep, params.add_room])
+  }, [params.completedStep, params.add_room, activeHomeId, updateStepsForCurrentHome])
   const bottomNavItems: BottomNavigationItem[] = [
     { key: 'home', label: 'Home', icon: null },
     { key: 'devices', label: 'Devices', icon: null },
@@ -320,7 +410,15 @@ const HomeScreen: React.FC = () => {
     }
 
     if (step.key === 'add_room') {
-      router.push('/(room)/AddRoom')
+      router.push({
+        pathname: '/(room)/AddRoom',
+        params: { homeId: activeHomeId?.toString() }
+      })
+      return
+    }
+
+    if (step.key === 'connect_device') {
+      router.push('/(devices)/AddDevice2')
       return
     }
 
@@ -414,18 +512,23 @@ const HomeScreen: React.FC = () => {
         } : undefined}
         onAddDevice={() => {
           setShowProfile(false);
+          router.push('/(devices)/AddDevice2');
         }}
         onMyHomes={() => {
           setShowProfile(false);
+          router.push('/(profile actions)/myHomes');
         }}
         onInviteFamily={() => {
           setShowProfile(false);
+          // Handle invite family
         }}
         onAccountSettings={() => {
           setShowProfile(false);
+          router.push('/(profile actions)/AccountSettings');
         }}
         onHelpSupport={() => {
           setShowProfile(false);
+          router.push('/(profile actions)/Help&support');
         }}
       />
     </View>

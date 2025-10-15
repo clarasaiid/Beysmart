@@ -449,3 +449,506 @@ export const HOME_ACCESSIBILITY = {
     FINISH_BUTTON: 'Tap to complete home setup',
   },
 } as const;
+
+// Add Device Screen Constants
+export const ADD_DEVICE = {
+  // Form fields
+  FIELDS: {
+    DEVICE_NAME: {
+      LABEL: 'Device Name',
+      PLACEHOLDER: 'e.g. Living Room Switch',
+      KEY: 'deviceName',
+    },
+    ADDED_TO: {
+      LABEL: 'Added To',
+      PLACEHOLDER: 'Select room',
+      KEY: 'addedTo',
+    },
+    DEVICE_TYPE: {
+      LABEL: 'Device Type',
+      KEY: 'deviceType',
+      OPTIONS: [
+        { label: 'Beyswitch', value: 'beyswitch', icon: 'Beyswitch' },
+        { label: 'Beysense', value: 'beysense', icon: 'Beysense' },
+        { label: 'Beyplug', value: 'beyplug', icon: 'Beyplug' },
+        { label: 'Beylock', value: 'beylock', icon: 'Beylock' },
+      ],
+    },
+  },
+
+  // Navigation
+  NAVIGATION: {
+    TITLE: 'Add New Device',
+    STEP_INDICATOR: 'Step 1 of 2',
+    BACK_BUTTON: 'Back',
+    CREATE_BUTTON: 'Create Device',
+  },
+
+  // Section titles
+  SECTIONS: {
+    DEVICE_DETAILS: 'Device Details',
+    AVAILABLE_DEVICES: 'Available Devices',
+  },
+
+  // Validation messages
+  VALIDATION: {
+    DEVICE_NAME_REQUIRED: 'Device name is required',
+    ADDED_TO_REQUIRED: 'Please select a room',
+    DEVICE_TYPE_REQUIRED: 'Please select a device type',
+  },
+
+  // API endpoints (placeholder; update when backend is ready)
+  API: {
+    CREATE_DEVICE: 'device/devices/',
+    GET_ROOMS: 'room/rooms/',
+  },
+
+  // Dimensions
+  DIMENSIONS: {
+    HEADER_HEIGHT: 60,
+    SECTION_SPACING: 24,
+    FIELD_SPACING: 16,
+    BUTTON_HEIGHT: 48,
+    DEVICE_TYPE_GRID_COLUMNS: 2,
+    DEVICE_TYPE_BUTTON_SIZE: 100,
+  },
+
+  // Colors
+  COLORS: {
+    HEADER_BACKGROUND: colors.navBarBackground,
+    SECTION_TITLE: colors.text,
+    INPUT_BACKGROUND: colors.surface,
+    BUTTON_BACKGROUND: colors.primary.base,
+    BUTTON_TEXT: colors.text,
+    DEVICE_TYPE_SELECTED: colors.primary.base,
+    DEVICE_TYPE_UNSELECTED: colors.border,
+  },
+} as const;
+
+// Device accessibility constants
+export const DEVICE_ACCESSIBILITY = {
+  LABELS: {
+    ADD_DEVICE_FORM: 'Add device form',
+    DEVICE_NAME_INPUT: 'Device name input',
+    ADDED_TO_DROPDOWN: 'Added to dropdown',
+    DEVICE_TYPE_GRID: 'Device type selection grid',
+    DEVICE_TYPE_BUTTON: 'Device type button',
+    CREATE_BUTTON: 'Create device button',
+  },
+  HINTS: {
+    ADD_DEVICE_FORM: 'Form to add a new device',
+    DEVICE_NAME_INPUT: 'Enter your device name',
+    ADDED_TO_DROPDOWN: 'Select which room to add device to',
+    DEVICE_TYPE_GRID: 'Select device type from grid',
+    DEVICE_TYPE_BUTTON: 'Tap to select device type',
+    CREATE_BUTTON: 'Tap to create the device',
+  },
+} as const;
+
+// Available devices catalog for selection screen (icons are keys in filled icons index)
+export const AVAILABLE_DEVICES = [
+  {
+    id: 'beylock',
+    title: 'Bey-Lock',
+    subtitle: 'Smart Lock',
+    iconName: 'Beylock',
+    iconBackgroundColor: '#DCEBFF',
+    iconColor: '#2E7DFF',
+  },
+  {
+    id: 'beysense',
+    title: 'Bey-Sense',
+    subtitle: 'Door Sensor',
+    iconName: 'Beysense',
+    iconBackgroundColor: '#DFF3EA',
+    iconColor: '#10B981',
+  },
+  {
+    id: 'beyswitch',
+    title: 'Bey-Switch',
+    subtitle: 'Smart Switch',
+    iconName: 'Beyswitch',
+    iconBackgroundColor: '#F1E9FF',
+    iconColor: '#8B5CF6',
+  },
+  {
+    id: 'beyplug',
+    title: 'Bey-Plug',
+    subtitle: 'Smart Plug',
+    iconName: 'Beyplug',
+    iconBackgroundColor: '#EEFCE6',
+    iconColor: '#84CC16',
+  },
+] as const;
+
+// WiFi Details Screen Constants
+export const WIFI_DETAILS = {
+  // Form fields
+  FIELDS: {
+    WIFI_NAME: {
+      LABEL: 'Wifi Name',
+      PLACEHOLDER: 'e.g. FamilyWiFi',
+      KEY: 'wifiName',
+    },
+    WIFI_PASSWORD: {
+      LABEL: 'Password',
+      PLACEHOLDER: 'Enter WiFi password',
+      KEY: 'wifiPassword',
+    },
+  },
+
+  // Navigation
+  NAVIGATION: {
+    TITLE: 'Add New Device',
+    STEP_INDICATOR: 'Step 1 of 2',
+    BACK_BUTTON: 'Back',
+    CONTINUE_BUTTON: 'Continue',
+  },
+
+  // Section titles
+  SECTIONS: {
+    WIFI_DETAILS: 'Enter Wifi Details',
+  },
+
+  // Validation messages
+  VALIDATION: {
+    WIFI_NAME_REQUIRED: 'WiFi name is required',
+    WIFI_PASSWORD_REQUIRED: 'WiFi password is required',
+    WIFI_NAME_MIN_LENGTH: 'WiFi name must be at least 2 characters',
+    WIFI_PASSWORD_MIN_LENGTH: 'Password must be at least 8 characters',
+  },
+
+  // Dimensions
+  DIMENSIONS: {
+    HEADER_HEIGHT: 60,
+    SECTION_SPACING: 24,
+    FIELD_SPACING: 16,
+    BUTTON_HEIGHT: 48,
+  },
+
+  // Colors
+  COLORS: {
+    HEADER_BACKGROUND: colors.navBarBackground,
+    SECTION_TITLE: colors.text,
+    INPUT_BACKGROUND: colors.surface,
+    BUTTON_BACKGROUND: colors.primary.base,
+    BUTTON_TEXT: colors.text,
+  },
+} as const;
+
+// Device Pairing Success Screen Constants
+export const DEVICE_PAIRING_SUCCESS = {
+  // Content
+  CONTENT: {
+    TITLE: 'Your Device Is Paired',
+    SUBTITLE: 'Successfully!',
+  },
+  
+  // Action Button
+  ACTION: {
+    TEXT: 'Setup Device Details',
+    VARIANT: 'primaryLarge' as const,
+  },
+  
+  // Dimensions
+  DIMENSIONS: {
+    ILLUSTRATION_SIZE: 120,
+    TITLE_SPACING: 16,
+    BUTTON_SPACING: 24,
+  },
+  
+  // Colors
+  COLORS: {
+    BACKGROUND: colors.navBarBackground,
+    TITLE_TEXT: colors.surface,
+    SUBTITLE_TEXT: colors.surface,
+  },
+} as const;
+
+// Device Details Setup Screen Constants
+export const DEVICE_DETAILS_SETUP = {
+  // Form fields
+  FIELDS: {
+    DEVICE_NAME: {
+      LABEL: 'Device Name',
+      PLACEHOLDER: 'e.g. lock 1 ',
+      KEY: 'deviceName',
+    },
+    ADD_TO_HOME: {
+      LABEL: 'Add To Home',
+      PLACEHOLDER: 'Select home',
+      KEY: 'addToHome',
+    },
+    ADD_TO_ROOM: {
+      LABEL: 'Add To Room',
+      PLACEHOLDER: 'Select room',
+      KEY: 'addToRoom',
+    },
+  },
+
+  // Navigation
+  NAVIGATION: {
+    TITLE: 'Add New Device',
+    STEP_INDICATOR: 'Step 1 of 2',
+    BACK_BUTTON: 'Back',
+    NEXT_BUTTON: 'Next',
+  },
+
+  // Section titles
+  SECTIONS: {
+    DEVICE_DETAILS: 'Enter Device Details',
+  },
+
+  // Validation messages
+  VALIDATION: {
+    DEVICE_NAME_REQUIRED: 'Device name is required',
+    HOME_REQUIRED: 'Please select a home',
+    ROOM_REQUIRED: 'Please select a room',
+    DEVICE_NAME_MIN_LENGTH: 'Device name must be at least 2 characters',
+  },
+
+  // Dimensions
+  DIMENSIONS: {
+    HEADER_HEIGHT: 60,
+    SECTION_SPACING: 24,
+    FIELD_SPACING: 16,
+    BUTTON_HEIGHT: 48,
+  },
+
+  // Colors
+  COLORS: {
+    HEADER_BACKGROUND: colors.navBarBackground,
+    SECTION_TITLE: colors.text,
+    INPUT_BACKGROUND: colors.surface,
+    BUTTON_BACKGROUND: colors.primary.base,
+    BUTTON_TEXT: colors.text,
+  },
+} as const;
+
+// Bey-Lock Model Selection Screen Constants
+export const BEY_LOCK_MODEL = {
+  // Navigation
+  NAVIGATION: {
+    TITLE: 'Add New Device',
+    STEP_INDICATOR: 'Step 1 of 2',
+    BACK_BUTTON: 'Back',
+  },
+
+  // Section titles
+  SECTIONS: {
+    SELECT_MODEL: 'Select your Bey-Lock Model',
+    INSTALLATION_GUIDE: 'Installation Guide Available',
+  },
+
+  // Device models
+  MODELS: [
+    {
+      id: 'smart-lock-pro',
+      name: 'Smart Lock Pro',
+      model: 'Model: SL-2025',
+      iconName: 'Beylock',
+    },
+    {
+      id: 'smart-lock-mini',
+      name: 'Smart Lock Mini',
+      model: 'Model: SL-2025',
+      iconName: 'Beylock',
+    },
+  ],
+
+  // Installation guide
+  INSTALLATION: {
+    ESTIMATED_TIME: 'Est. time: 15-20 minutes',
+    DESCRIPTION: 'Follow our step-by-step guide to install your new smart lock safely and correctly.',
+    BUTTON_TEXT: 'Go to installation guide',
+  },
+
+  // Dimensions
+  DIMENSIONS: {
+    HEADER_HEIGHT: 60,
+    SECTION_SPACING: 24,
+    CARD_SPACING: 12,
+    CARD_PADDING: 16,
+    ICON_SIZE: 48,
+  },
+
+  // Colors
+  COLORS: {
+    HEADER_BACKGROUND: colors.navBarBackground,
+    SECTION_TITLE: colors.text,
+    CARD_BACKGROUND: colors.surface,
+    CARD_ICON_BACKGROUND: colors.background,
+    INSTALLATION_BUTTON: colors.background,
+  },
+} as const;
+
+// Device Calibration Screen Constants
+export const DEVICE_CALIBRATION = {
+  // Content
+  CONTENT: {
+    TITLE: 'Your Device Is Almost Ready',
+    DEVICE_NAME: 'Front Door', // This will be dynamic based on user input
+    DEVICE_LOCATION: 'Main Home', // This will be dynamic based on selected home
+    CALIBRATION_BUTTON: 'Calibrate Device',
+    CALIBRATION_DESCRIPTION: 'Let\'s calibrate your lock so the app knows how to use it with your door hardware',
+  },
+
+  // Device-specific content functions
+  DEVICE_CONTENT: {
+    getDeviceIcon: (deviceType: string) => {
+      switch (deviceType.toLowerCase()) {
+        case 'beylock':
+          return 'Beylock';
+        case 'beyplug':
+          return 'Beyplug';
+        case 'beysense':
+          return 'Beysense';
+        case 'beyswitch':
+          return 'Beyswitch';
+        default:
+          return 'Beylock';
+      }
+    },
+    getCalibrationDescription: (deviceType: string) => {
+      switch (deviceType.toLowerCase()) {
+        case 'beylock':
+          return 'Let\'s calibrate your lock so the app knows how to use it with your door hardware';
+        case 'beyplug':
+          return 'Let\'s calibrate your plug so the app knows how to control your connected device';
+        case 'beysense':
+          return 'Let\'s calibrate your sensor so the app knows how to detect door movements';
+        case 'beyswitch':
+          return 'Let\'s calibrate your switch so the app knows how to control your lights';
+        default:
+          return 'Let\'s calibrate your device so the app knows how to use it properly';
+      }
+    },
+  },
+
+  // Action
+  ACTION: {
+    VARIANT: 'primaryLarge' as const,
+    CALIBRATE_BUTTON: 'Tap to start device calibration',
+  },
+
+  // Dimensions
+  DIMENSIONS: {
+    ILLUSTRATION_SIZE: 120,
+    DEVICE_ICON_SIZE: 48,
+    DEVICE_CARD_PADDING: 24,
+    BUTTON_HEIGHT: 48,
+    TITLE_SPACING: 24,
+    BUTTON_SPACING: 32,
+  },
+
+  // Colors
+  COLORS: {
+    BACKGROUND: colors.background,
+    TITLE_TEXT: colors.text,
+    DEVICE_NAME_TEXT: colors.text,
+    DEVICE_LOCATION_TEXT: colors.secondaryText,
+    DESCRIPTION_TEXT: colors.secondaryText,
+    DEVICE_ICON_BACKGROUND: colors.completedstep,
+    DEVICE_CARD_BACKGROUND: colors.surface,
+    CALIBRATION_BUTTON: colors.primary.base,
+  },
+} as const;
+
+// Lock Calibration Steps Constants (6 steps)
+export const LOCK_CALIBRATION_STEPS = {
+  STEPS: [
+    {
+      step: 1,
+      title: 'Calibrate Lock',
+      description: 'Rotate your lock completely in the UNLOCK Direction, all the way until it stops.\n\nIf your thumb turn also operates your latch then hold it in the unlatched position until next step.',
+    },
+    {
+      step: 2,
+      title: 'Calibrate Lock',
+      description: 'Rotate your lock completely in the LOCK Direction, all the way until it stops.\n Hold it in this position until the next step. ', 
+    },
+    {
+      step: 3,
+      title: 'Calibrate Lock',
+      description: 'Slowly turn the lock until the door is just unlocked, stopping after it clicks to unlock.', 
+    },
+    {
+      step: 4,
+      title: 'Calibrate Lock',
+      description: 'Rotate the thumbturn until the door is just locked. If your lock has multiple locked position, just stop after the first position.', 
+    },
+    {
+      step: 5,
+      title: 'Calibrate Lock',
+      description: 'keep the door slightly ajar (just enough so that the lock or latch is more in the door frame)', 
+    },
+    {
+      step: 6,
+      title: 'Calibrate Lock',
+      description: 'Now close the door.', 
+    },
+  ],
+
+  // Navigation
+  NAVIGATION: {
+    BUTTON_TEXT: 'Next',
+    STEP_INDICATOR: (current: number, total: number) => `Step ${current} of ${total}`,
+  },
+
+  // Dimensions
+  DIMENSIONS: {
+    GIF_WIDTH: 400,
+    GIF_HEIGHT: 480,
+    ICON_SIZE: 48,
+  },
+
+  // Colors
+  COLORS: {
+    BACKGROUND: colors.background,
+    TITLE_TEXT: colors.text,
+    DESCRIPTION_TEXT: colors.text,
+    STEP_INDICATOR_TEXT: colors.secondaryText,
+    ICON_BACKGROUND: colors.primary.base,
+  },
+
+  // Action
+  ACTION: {
+    VARIANT: 'primaryLarge' as const,
+    NEXT_BUTTON: 'Tap to proceed to next step',
+  },
+} as const;
+
+// Calibration Success Screen Constants
+export const CALIBRATION_SUCCESS = {
+  // Content
+  CONTENT: {
+    TITLE: 'Your Device Is Calibrated Successfully!',
+  },
+
+  // Actions
+  ACTIONS: {
+    GO_TO_DEVICE: {
+      TEXT: 'Go to Device',
+      VARIANT: 'secondaryLarge' as const,
+      HINT: 'Tap to view device details',
+    },
+    GO_TO_HOMEPAGE: {
+      TEXT: 'Go To Homepage',
+      VARIANT: 'primaryLarge' as const,
+      HINT: 'Tap to return to homepage',
+    },
+  },
+
+  // Dimensions
+  DIMENSIONS: {
+    ILLUSTRATION_SIZE: 120,
+    TITLE_SPACING: 24,
+    BUTTON_SPACING: 16,
+  },
+
+  // Colors
+  COLORS: {
+    BACKGROUND: colors.navBarBackground,
+    TITLE_TEXT: colors.surface,
+  },
+} as const;
