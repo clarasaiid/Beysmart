@@ -1,4 +1,8 @@
+//run ipconfig and get the ipv4 address and replace it with this
 export const BASE_URL = 'http:/192.168.100.21:8000/api/';
+
+
+
 
 // API configuration
 export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.100.21:8000';
@@ -35,3 +39,8 @@ export const HTTP_STATUS = {
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
 } as const;
+
+
+
+
+
