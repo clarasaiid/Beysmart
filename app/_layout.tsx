@@ -35,6 +35,8 @@ export default function RootLayout() {
         <Stack.Screen name="(room)" options={{ headerShown: false }} />
         {/* Profile flow screens */}
         <Stack.Screen name="(profile actions)" options={{ headerShown: false }} />
+        {/* Devices flow screens */}
+        <Stack.Screen name="(devices)" options={{ headerShown: false }} />
         
         <Stack.Screen name="+not-found" />
       </Stack>

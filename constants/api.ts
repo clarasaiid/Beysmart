@@ -1,7 +1,7 @@
-export const BASE_URL = 'http://10.2.146.178:8000/api/';
+export const BASE_URL = 'http:/192.168.100.21:8000/api/';
 
 // API configuration
-export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://10.2.146.178:8000';
+export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.100.21:8000';
 
 export const API_ENDPOINTS = {
   // Authentication
