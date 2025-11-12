@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { Alert, TouchableOpacity, View } from 'react-native';
 import ProfilePage from '../(profile actions)/Profile';
 import { BASE_URL } from '../../constants/api';
 import { AppButton } from '../../design-system/Buttons/Buttons';
@@ -12,6 +12,7 @@ import TextField from '../../design-system/inputs/TextField';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { BottomNavigation } from '../../design-system/Navigation/BottomNavigation';
 import { Typography } from '../../design-system/typography/typography';
+import bluetoothManager from '../../src/ble/bluetoothmanager';
 
 const AddDevice6 = () => {
   const [showProfile, setShowProfile] = useState(false);
@@ -20,6 +21,12 @@ const AddDevice6 = () => {
   const [wifiName, setWifiName] = useState('');
   const [wifiPassword, setWifiPassword] = useState('');
   const [errors, setErrors] = useState<{ wifiName?: string; wifiPassword?: string }>({});
+  const [isSendingWiFi, setIsSendingWiFi] = useState(false);
+
+  // TODO: Replace these UUIDs with your actual device's service and characteristic UUIDs
+  // You need to get these from your ESP32/hardware developer
+  const WIFI_SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"; // Example UUID
+  const WIFI_CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8"; // Example UUID
 
   // Load user data for profile
   useEffect(() => {
@@ -62,12 +69,64 @@ const AddDevice6 = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleContinue = () => {
-    if (validateForm()) {
-      // TODO: Implement WiFi connection logic
-      console.log('WiFi Details:', { wifiName, wifiPassword });
-      // Navigate to device pairing success screen
-      router.push('/(devices)/AddDevice7');
+  const handleContinue = async () => {
+    if (!validateForm()) return;
+
+    setIsSendingWiFi(true);
+
+    try {
+      // Get the connected device
+      const connectedDevice = bluetoothManager.getConnectedDevice();
+      
+      if (!connectedDevice) {
+        Alert.alert(
+          'Not Connected',
+          'No device is connected. Please go back and connect to your device first.',
+          [{ text: 'OK' }]
+        );
+        setIsSendingWiFi(false);
+        return;
+      }
+
+      console.log('📡 Sending WiFi credentials to device:', connectedDevice.name);
+
+      // First, retrieve services to ensure device is ready
+      await bluetoothManager.retrieveServices(connectedDevice.id);
+
+      // Send WiFi credentials via Bluetooth
+      const success = await bluetoothManager.sendWiFiCredentials(
+        connectedDevice.id,
+        wifiName,
+        wifiPassword,
+        WIFI_SERVICE_UUID,
+        WIFI_CHARACTERISTIC_UUID
+      );
+
+      if (success) {
+        // Store WiFi credentials in case we need them later
+        await AsyncStorage.setItem('lastWifiSSID', wifiName);
+        console.log('✅ WiFi credentials sent successfully');
+        
+        // Wait a bit for device to process
+        setTimeout(() => {
+          setIsSendingWiFi(false);
+          router.push('/(devices)/AddDevice7');
+        }, 1000);
+      } else {
+        throw new Error('Failed to send WiFi credentials');
+      }
+    } catch (error: any) {
+      console.error('❌ Error sending WiFi credentials:', error);
+      setIsSendingWiFi(false);
+      
+      Alert.alert(
+        'Connection Error',
+        'Failed to send WiFi credentials to the device. Make sure the device is still connected.\n\nNote: You may need to update the Service and Characteristic UUIDs in the code to match your hardware.',
+        [
+          { text: 'Try Again', onPress: () => handleContinue() },
+          { text: 'Skip for Now', onPress: () => router.push('/(devices)/AddDevice7') }
+        ]
+      );
     }
   };
 
@@ -146,8 +205,9 @@ const AddDevice6 = () => {
         <View style={styles.buttonContainer}>
           <AppButton
             variant="primaryLarge"
-            title={WIFI_DETAILS.NAVIGATION.CONTINUE_BUTTON}
+            title={isSendingWiFi ? 'Sending WiFi Credentials...' : WIFI_DETAILS.NAVIGATION.CONTINUE_BUTTON}
             onPress={handleContinue}
+            disabled={isSendingWiFi}
             accessibilityLabel={WIFI_DETAILS.NAVIGATION.CONTINUE_BUTTON}
             accessibilityHint="Tap to continue with WiFi setup"
           />

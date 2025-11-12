@@ -1,12 +1,7 @@
-//run ipconfig and get the ipv4 address and replace it with this
-export const BASE_URL = 'http:/192.168.100.21:8000/api/';
-
-
-
-
-// API configuration
-export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.100.21:8000';
-
+// Central API base. Set EXPO_PUBLIC_API_URL to something like: http://192.168.1.50:8000
+const stripTrailingSlash = (url: string) => url.replace(/\/+$/, '');
+export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://beysmartbackend-production.up.railway.app';
+export const BASE_URL = `${stripTrailingSlash(API_BASE_URL)}/api/`;
 export const API_ENDPOINTS = {
   // Authentication
   LOGIN: '/api/auth/login/',

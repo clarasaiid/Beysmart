@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, TouchableOpacity, View } from 'react-native';
 import { AppButton } from '../../design-system/Buttons/Buttons';
 import { colors } from '../../design-system/colors/colors';
 import { DEVICE_CALIBRATION } from '../../design-system/home/Constants';
@@ -8,6 +8,7 @@ import { BackArrow } from '../../design-system/icons';
 import Celebration from '../../design-system/Illustration/celebration';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
+import bluetoothManager from '../../src/ble/bluetoothmanager';
 
 // Device Icons
 import { Beylock, Beyplug, Beysense, Beyswitch } from '../../design-system/icons/filled';
@@ -19,23 +20,88 @@ const AddDevice9 = () => {
   const deviceName = params.deviceName as string || DEVICE_CALIBRATION.CONTENT.DEVICE_NAME;
   const deviceLocation = params.deviceLocation as string || DEVICE_CALIBRATION.CONTENT.DEVICE_LOCATION;
   const deviceType = params.deviceType as string || 'beylock';
+  const deviceId = params.deviceId as string;
+  const deviceToken = params.deviceToken as string;
+  
+  const [isSendingToken, setIsSendingToken] = useState(false);
+
+  // TODO: Replace these UUIDs with your actual device's service and characteristic UUIDs
+  const TOKEN_SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"; // Example - same or different from WiFi
+  const TOKEN_CHARACTERISTIC_UUID = "ca73b3ba-39f6-4ab3-91ae-186dc9577d99"; // Example UUID
+  
+  // Log device token for Bluetooth transmission
+  console.log('Device Token for Bluetooth transmission:', deviceToken);
 
   const handleBack = () => {
     router.back();
   };
 
-  const handleCalibrateDevice = () => {
-    // TODO: Implement device calibration logic
-    console.log('Starting device calibration for:', deviceName);
-    // Navigate to first calibration step
+  const sendTokenViaBluetoothAndProceed = async () => {
+    setIsSendingToken(true);
+    
+    try {
+      const connectedDevice = bluetoothManager.getConnectedDevice();
+      
+      if (!connectedDevice || !deviceToken) {
+        console.log('⚠️ No connected device or token, skipping token transmission');
+        // Proceed anyway - token sending is optional at this stage
+        proceedToCalibration();
+        return;
+      }
+
+      console.log('🔐 Sending ThingsBoard token via Bluetooth...');
+      
+      const success = await bluetoothManager.sendDeviceToken(
+        connectedDevice.id,
+        deviceToken,
+        TOKEN_SERVICE_UUID,
+        TOKEN_CHARACTERISTIC_UUID
+      );
+
+      if (success) {
+        console.log('✅ Token sent successfully');
+        Alert.alert(
+          'Success!',
+          'Device token sent to your smart lock. Your device can now connect to ThingsBoard.',
+          [{ text: 'Continue', onPress: proceedToCalibration }]
+        );
+      } else {
+        throw new Error('Failed to send token');
+      }
+    } catch (error) {
+      console.error('❌ Error sending token:', error);
+      Alert.alert(
+        'Token Not Sent',
+        'Could not send ThingsBoard token via Bluetooth. You may need to configure the device manually later.\n\nWould you like to continue anyway?',
+        [
+          { text: 'Try Again', onPress: sendTokenViaBluetoothAndProceed },
+          { text: 'Continue Anyway', onPress: proceedToCalibration }
+        ]
+      );
+    } finally {
+      setIsSendingToken(false);
+    }
+  };
+
+  const proceedToCalibration = () => {
     router.push({
       pathname: '/(devices)/AddDevice10' as any,
       params: {
         deviceName: deviceName,
         deviceLocation: deviceLocation,
         deviceType: deviceType,
+        deviceId: deviceId,
+        deviceToken: deviceToken,
       }
     });
+  };
+
+  const handleCalibrateDevice = () => {
+    console.log('Starting device calibration for:', deviceName);
+    console.log('Token available:', deviceToken);
+    
+    // Try to send token via Bluetooth first
+    sendTokenViaBluetoothAndProceed();
   };
 
   // Get the appropriate device icon based on device type
@@ -109,8 +175,9 @@ const AddDevice9 = () => {
       <View style={styles.buttonContainer}>
         <AppButton
           variant={DEVICE_CALIBRATION.ACTION.VARIANT}
-          title={DEVICE_CALIBRATION.CONTENT.CALIBRATION_BUTTON}
+          title={isSendingToken ? 'Configuring Device...' : DEVICE_CALIBRATION.CONTENT.CALIBRATION_BUTTON}
           onPress={handleCalibrateDevice}
+          disabled={isSendingToken}
           accessibilityLabel={DEVICE_CALIBRATION.ACTION.CALIBRATE_BUTTON}
           accessibilityHint="Tap to start device calibration"
         />

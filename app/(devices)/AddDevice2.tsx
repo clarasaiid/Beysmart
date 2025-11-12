@@ -136,7 +136,15 @@ const AddDevice2: React.FC = () => {
                 </Typography>
               </View>
               <TouchableOpacity
-                onPress={() => {
+                onPress={async () => {
+                  // Store device type for use in AddDevice8
+                  try {
+                    await AsyncStorage.setItem('selectedDeviceType', d.id);
+                    console.log('Stored device type:', d.id);
+                  } catch (error) {
+                    console.error('Error storing device type:', error);
+                  }
+                  
                   if (d.id === 'beylock') {
                     router.push('/(devices)/AddDevice3');
                   } else {
