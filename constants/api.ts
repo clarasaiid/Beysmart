@@ -2,7 +2,6 @@
 const stripTrailingSlash = (url: string) => url.replace(/\/+$/, '');
 export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://beysmartbackend-production.up.railway.app';
 export const BASE_URL = `${stripTrailingSlash(API_BASE_URL)}/api/`;
-
 export const API_ENDPOINTS = {
   // Authentication
   LOGIN: '/api/auth/login/',
@@ -35,3 +34,8 @@ export const HTTP_STATUS = {
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
 } as const;
+
+
+
+
+
