@@ -36,8 +36,10 @@ const AddDevice8 = () => {
   const [homes, setHomes] = useState<Home[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [errors, setErrors] = useState<{ deviceName?: string; home?: string; room?: string }>({});
+  const [deviceType, setDeviceType] = useState<string>('');
+  const [isCreatingDevice, setIsCreatingDevice] = useState(false);
 
-  // Load user data for profile
+  // Load user data and device type
   useEffect(() => {
     const loadUserData = async () => {
       try {
@@ -49,6 +51,13 @@ const AddDevice8 = () => {
             profile_picture: userData.profile_picture ? `${BASE_URL.replace('/api/', '')}${userData.profile_picture}` : undefined
           });
           setUserEmail(userData.email || '');
+        }
+
+        // Load the device type that was stored in AddDevice2
+        const storedDeviceType = await AsyncStorage.getItem('selectedDeviceType');
+        if (storedDeviceType) {
+          setDeviceType(storedDeviceType);
+          console.log('Loaded device type:', storedDeviceType);
         }
       } catch (error) {
         console.error('Error loading user data:', error);
@@ -118,13 +127,51 @@ const AddDevice8 = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
-    if (validateForm()) {
-      // TODO: Implement device creation logic
-      console.log('Device Details:', { deviceName, selectedHome, selectedRoom });
+  const handleNext = async () => {
+    if (!validateForm()) return;
+
+    setIsCreatingDevice(true);
+    
+    try {
+      // Map frontend device IDs to backend device_type values
+      const deviceTypeMap: { [key: string]: string } = {
+        'beylock': 'bey_lock',
+        'beysense': 'bey_sense',
+        'beyswitch': 'bey_switch',
+        'beyplug': 'bey_plug',
+      };
+
+      const backendDeviceType = deviceTypeMap[deviceType] || 'bey_lock';
+
+      // Create device in backend
+      console.log('Creating device with:', {
+        name: deviceName,
+        device_type: backendDeviceType,
+        home: selectedHome,
+        room: selectedRoom,
+      });
+
+      const response = await apiClient.post('home/devices/', {
+        name: deviceName,
+        device_type: backendDeviceType,
+        home: selectedHome,
+        room: selectedRoom,
+      });
+
+      console.log('Device created successfully:', response.data);
+      console.log('Device Token:', response.data.tb_device_token);
       
-      // Find the selected home name
+      // Find the selected home name for display
       const selectedHomeName = homes.find(home => home.id === selectedHome)?.name || selectedHome;
+      
+      // Store the device token for Bluetooth transmission
+      if (response.data.tb_device_token) {
+        await AsyncStorage.setItem('deviceToken', response.data.tb_device_token);
+        console.log('Stored device token for Bluetooth transmission');
+      }
+      
+      // Clear the stored device type as we're done with it
+      await AsyncStorage.removeItem('selectedDeviceType');
       
       // Navigate to device calibration screen with device details
       router.push({
@@ -132,9 +179,34 @@ const AddDevice8 = () => {
         params: {
           deviceName: deviceName,
           deviceLocation: selectedHomeName,
-          deviceType: 'beylock', // For now, default to lock. This should come from device selection
+          deviceType: deviceType,
+          deviceId: response.data.id,
+          deviceToken: response.data.tb_device_token || '',
         }
       });
+    } catch (error: any) {
+      console.error('Error creating device:', error);
+      console.error('Error response:', error.response?.data);
+      
+      // Show user-friendly error message
+      let errorMessage = 'Failed to create device. Please try again.';
+      if (error.response?.data) {
+        const errorData = error.response.data;
+        if (typeof errorData === 'object') {
+          // Extract first error message
+          const firstError = Object.values(errorData)[0];
+          if (Array.isArray(firstError)) {
+            errorMessage = firstError[0];
+          } else if (typeof firstError === 'string') {
+            errorMessage = firstError;
+          }
+        }
+      }
+      
+      // Set error in the errors state
+      setErrors({ deviceName: errorMessage });
+    } finally {
+      setIsCreatingDevice(false);
     }
   };
 
@@ -248,8 +320,9 @@ const AddDevice8 = () => {
         <View style={styles.buttonContainer}>
           <AppButton
             variant="primaryLarge"
-            title={DEVICE_DETAILS_SETUP.NAVIGATION.NEXT_BUTTON}
+            title={isCreatingDevice ? 'Creating Device...' : DEVICE_DETAILS_SETUP.NAVIGATION.NEXT_BUTTON}
             onPress={handleNext}
+            disabled={isCreatingDevice}
             accessibilityLabel={DEVICE_DETAILS_SETUP.NAVIGATION.NEXT_BUTTON}
             accessibilityHint="Tap to proceed to next step"
           />

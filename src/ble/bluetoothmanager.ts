@@ -1,6 +1,6 @@
-import { Alert, PermissionsAndroid, Platform, NativeEventEmitter, NativeModules } from "react-native";
-import BleManager from "react-native-ble-manager";
 import * as ExpoDevice from "expo-device";
+import { Alert, NativeEventEmitter, NativeModules, PermissionsAndroid, Platform } from "react-native";
+import BleManager from "react-native-ble-manager";
 
 interface BleDevice {
   id: string;
@@ -130,6 +130,118 @@ class BluetoothManager {
     } catch (error) {
       console.error("Connection error:", error);
       Alert.alert("Error", "Failed to connect to the device. Please try again.");
+      return null;
+    }
+  }
+
+  // ✅ Get connected device
+  getConnectedDevice(): BleDevice | null {
+    return this.connectedDevice;
+  }
+
+  // ✅ Retrieve services and characteristics from a connected device
+  async retrieveServices(deviceId: string): Promise<any> {
+    try {
+      console.log("📋 Retrieving services for device:", deviceId);
+      const peripheralInfo = await BleManager.retrieveServices(deviceId);
+      console.log("✅ Services retrieved:", peripheralInfo);
+      return peripheralInfo;
+    } catch (error) {
+      console.error("Error retrieving services:", error);
+      throw error;
+    }
+  }
+
+  // ✅ Write data to a characteristic
+  async writeToCharacteristic(
+    deviceId: string,
+    serviceUUID: string,
+    characteristicUUID: string,
+    data: number[]
+  ): Promise<void> {
+    try {
+      console.log(`📤 Writing to characteristic: ${characteristicUUID}`);
+      await BleManager.write(deviceId, serviceUUID, characteristicUUID, data);
+      console.log("✅ Data written successfully");
+    } catch (error) {
+      console.error("Error writing to characteristic:", error);
+      throw error;
+    }
+  }
+
+  // ✅ Send WiFi credentials to device
+  async sendWiFiCredentials(
+    deviceId: string,
+    ssid: string,
+    password: string,
+    serviceUUID: string,
+    characteristicUUID: string
+  ): Promise<boolean> {
+    try {
+      console.log("📡 Sending WiFi credentials to device...");
+      
+      // Create JSON payload
+      const payload = JSON.stringify({
+        ssid: ssid,
+        password: password,
+        timestamp: Date.now()
+      });
+      
+      // Convert string to byte array
+      const data = Array.from(payload).map(char => char.charCodeAt(0));
+      
+      await this.writeToCharacteristic(deviceId, serviceUUID, characteristicUUID, data);
+      console.log("✅ WiFi credentials sent successfully");
+      return true;
+    } catch (error) {
+      console.error("❌ Failed to send WiFi credentials:", error);
+      return false;
+    }
+  }
+
+  // ✅ Send ThingsBoard device token to device
+  async sendDeviceToken(
+    deviceId: string,
+    token: string,
+    serviceUUID: string,
+    characteristicUUID: string
+  ): Promise<boolean> {
+    try {
+      console.log("🔐 Sending device token to device...");
+      
+      // Create JSON payload
+      const payload = JSON.stringify({
+        token: token,
+        server: "mqtt.thingsboard.cloud",
+        port: 1883,
+        timestamp: Date.now()
+      });
+      
+      // Convert string to byte array
+      const data = Array.from(payload).map(char => char.charCodeAt(0));
+      
+      await this.writeToCharacteristic(deviceId, serviceUUID, characteristicUUID, data);
+      console.log("✅ Device token sent successfully");
+      return true;
+    } catch (error) {
+      console.error("❌ Failed to send device token:", error);
+      return false;
+    }
+  }
+
+  // ✅ Read data from a characteristic
+  async readFromCharacteristic(
+    deviceId: string,
+    serviceUUID: string,
+    characteristicUUID: string
+  ): Promise<number[] | null> {
+    try {
+      console.log(`📥 Reading from characteristic: ${characteristicUUID}`);
+      const data = await BleManager.read(deviceId, serviceUUID, characteristicUUID);
+      console.log("✅ Data read successfully:", data);
+      return data;
+    } catch (error) {
+      console.error("Error reading from characteristic:", error);
       return null;
     }
   }
