@@ -14,7 +14,7 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_API_URL": "http://10.2.155.103:8000"
+        "EXPO_PUBLIC_API_URL": "https://beysmartbackend-production-f1a9.up.railway.app"
       },
       "android": {
         "buildType": "apk"
@@ -22,6 +22,9 @@
     },
     "production": {
       "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://beysmartbackend-production-f1a9.up.railway.app"
+      },
       "android": {
         "buildType": "app-bundle"
       }

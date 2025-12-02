@@ -1,8 +1,9 @@
 // Central API base. Set EXPO_PUBLIC_API_URL to something like: http://192.168.1.50:8000
 const stripTrailingSlash = (url: string) => url.replace(/\/+$/, '');
-export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://beysmartbackend-production.up.railway.app';
+// For local testing, use: 'http://192.168.100.21:8000'
+// For production (EAS build), use Railway URL:
+export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://beysmartbackend-production-f1a9.up.railway.app';
 export const BASE_URL = `${stripTrailingSlash(API_BASE_URL)}/api/`;
-
 export const API_ENDPOINTS = {
   // Authentication
   LOGIN: '/api/auth/login/',

@@ -8,7 +8,8 @@ import { BackArrow } from '../../design-system/icons';
 import Celebration from '../../design-system/Illustration/celebration';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { Typography } from '../../design-system/typography/typography';
-import bluetoothManager from '../../src/ble/bluetoothmanager';
+// Metro config handles BLE mocking when DISABLE_BLE=true
+import bluetoothManager from '../../src/ble';
 
 // Device Icons
 import { Beylock, Beyplug, Beysense, Beyswitch } from '../../design-system/icons/filled';

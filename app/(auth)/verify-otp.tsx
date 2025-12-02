@@ -181,7 +181,7 @@ const VerifyOTPScreen = () => {
           justifyContent: 'center',
           marginBottom: Spacing.lg,
         }}
-        onPress={() => {}}
+        onPress={() => router.back()}
       >
         <visuals.backIcon width={24} height={24} color={AUTH_THEME.text} />
       </TouchableOpacity>
