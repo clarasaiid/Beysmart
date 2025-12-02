@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
-import React from 'react';
-import { Image, Modal, Pressable, ScrollView, TouchableOpacity, View } from 'react-native';
+import React, { useRef } from 'react';
+import { Animated, Image, Modal, PanResponder, Pressable, ScrollView, TouchableOpacity, View } from 'react-native';
 import { colors } from '../../design-system/colors/colors';
 import {
   HelpSupport,
@@ -51,6 +51,51 @@ export default function ProfilePage({
 
   const { name, email, profilePicture, homesCount } = userData || defaultUserData;
 
+  // Swipe to dismiss animation
+  const translateX = useRef(new Animated.Value(0)).current;
+  
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => false,
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        // Only respond to horizontal swipes (right direction)
+        return gestureState.dx > 10 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+      },
+      onPanResponderMove: (_, gestureState) => {
+        // Only allow swiping to the right (positive dx)
+        if (gestureState.dx > 0) {
+          translateX.setValue(gestureState.dx);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        // If swiped more than 100px to the right, close the drawer
+        if (gestureState.dx > 100 || gestureState.vx > 0.5) {
+          Animated.timing(translateX, {
+            toValue: 350,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(() => {
+            translateX.setValue(0);
+            onClose?.();
+          });
+        } else {
+          // Snap back
+          Animated.spring(translateX, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
+
+  // Reset position when modal opens
+  React.useEffect(() => {
+    if (visible) {
+      translateX.setValue(0);
+    }
+  }, [visible]);
+
   // Dynamic user display logic
   const displayName = name || email;
   const displayEmail = name ? email : null;
@@ -96,7 +141,8 @@ export default function ProfilePage({
         }}
         onPress={onClose}
       >
-        <Pressable 
+        <Animated.View 
+          {...panResponder.panHandlers}
           style={{ 
             width: 316, // Fixed width from Figma
             height: '100%', // Full height
@@ -108,8 +154,8 @@ export default function ProfilePage({
             shadowOpacity: 0.1,
             shadowRadius: 8,
             elevation: 8,
+            transform: [{ translateX }],
           }}
-          onPress={(e) => e.stopPropagation()}
         >
         <ScrollView 
           style={{ flex: 1 }} 
@@ -367,7 +413,7 @@ export default function ProfilePage({
             </View>
           </View>
         </ScrollView>
-        </Pressable>
+        </Animated.View>
       </Pressable>
     </Modal>
   );

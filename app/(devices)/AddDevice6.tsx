@@ -12,7 +12,8 @@ import TextField from '../../design-system/inputs/TextField';
 import { Spacing } from '../../design-system/Layout/spacing';
 import { BottomNavigation } from '../../design-system/Navigation/BottomNavigation';
 import { Typography } from '../../design-system/typography/typography';
-import bluetoothManager from '../../src/ble/bluetoothmanager';
+// Metro config handles BLE mocking when DISABLE_BLE=true
+import bluetoothManager from '../../src/ble';
 
 const AddDevice6 = () => {
   const [showProfile, setShowProfile] = useState(false);

@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Modal, TouchableOpacity, View } from 'react-native';
-import { Device } from 'react-native-ble-plx';
 import { GestureHandlerRootView, PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import ProfilePage from '../(profile actions)/Profile';
 import { BASE_URL } from '../../constants/api';
@@ -12,7 +11,16 @@ import { Beylock, Beyplug, Beysense, Beyswitch, BluetoothIcon } from '../../desi
 import { Spacing } from '../../design-system/Layout/spacing';
 import { BottomNavigation } from '../../design-system/Navigation/BottomNavigation';
 import { Typography } from '../../design-system/typography/typography';
-import bluetoothManager from '../../src/ble/bluetoothmanager';
+// Metro config handles BLE mocking when DISABLE_BLE=true
+import bluetoothManager from '../../src/ble';
+
+// BLE Device interface - matches the interface from bluetoothManager
+interface BleDevice {
+  id: string;
+  name: string;
+  rssi: number;
+  advertising: any;
+}
 interface ScannedDevice {
   id: string;
   name: string;
@@ -78,16 +86,16 @@ const AddDevice4 = () => {
       setScannedDevices([]);
       setShowDeviceList(false);
 
-      await bluetoothManager.scanForDevices((device: Device) => {
+      await bluetoothManager.scanForDevices((device: BleDevice) => {
         console.log('Found device:', device.name, device.id);
         
-        // Only add devices that have names and are connectable
-        if (device.name && (device.isConnectable === true || device.isConnectable === null)) {
+        // Only add devices that have names (the bluetooth manager already filters for named devices)
+        if (device.name) {
           const newDevice: ScannedDevice = {
             id: device.id,
             name: device.name,
             rssi: device.rssi || 0,
-            isConnectable: device.isConnectable === true || device.isConnectable === null,
+            isConnectable: true, // Assume connectable since manager returns valid BLE devices
             icon: getDeviceIcon(device.name)
           };
 

@@ -71,7 +71,7 @@ export default function PhoneLoginScreen() {
         const errorMessage = err.response?.data?.error || ERROR_MESSAGES.INVALID_PHONE_FORMAT;
         setError(errorMessage);
       } else if (err.code === 'NETWORK_ERROR' || err.message?.includes('Network Error') || err.code === 'ECONNREFUSED') {
-        setError(`Network Error: ${err.message}. Please check if the backend server is running on http://10.2.150.183:8000`);
+        setError(`Network Error: ${err.message}. Please check your internet connection.`);
       } else {
         setError(`${ERROR_MESSAGES.UNEXPECTED_ERROR}: ${err.message}`);
       }

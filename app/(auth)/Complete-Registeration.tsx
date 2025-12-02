@@ -5,11 +5,11 @@ import { ActivityIndicator, Alert, ScrollView, TouchableOpacity, View } from 're
 import { BASE_URL } from '../../constants/api';
 import { AUTH_COPY, AUTH_TEXT, AUTH_THEME, AUTH_VISUALS, type AuthScreenCopy } from '../../design-system/auth/constants';
 import { AppButton } from '../../design-system/Buttons/Buttons';
+import { colors } from '../../design-system/colors';
 import { TextField } from '../../design-system/inputs';
 import { Margin } from '../../design-system/Layout/margins';
 import { Padding } from '../../design-system/Layout/padding';
 import { Spacing } from '../../design-system/Layout/spacing';
-import { colors } from '../../design-system/colors';
 import { Typography } from '../../design-system/typography/typography';
 
 
@@ -71,7 +71,7 @@ const CompleteRegisteration = () => {
             justifyContent: 'center',
             marginBottom: Spacing.lg,
           }}
-          onPress={() => {}}
+          onPress={() => router.back()}
         >
           <visuals.backIcon width={24} height={24} color={AUTH_THEME.text} />
         </TouchableOpacity>
